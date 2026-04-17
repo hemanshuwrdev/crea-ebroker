@@ -685,6 +685,57 @@
                 </div>
             </div>
 
+             <div class="card">
+                <div class="card-body">
+                    <div class="form-group row">
+                        {{-- GST Setting --}}
+                        <div class="divider pt-3 mt-3">
+                            <h6 class="divider-text">{{ __('GST settings') }}</h6>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="gstno" class="form-label">{{ __('GST No.') }}</label>
+                                <input type="text" class=" form-control" name="gst_no" id="gstno" value="" placeholder="{{ __('Your GST No.') }}">
+                                <small class="text-grey">{{ __('Note: Please add your GST no here.') }}</small>
+                            </div>
+                        </div>
+                        <hr class="mt-4" style="">
+                        <div>{{ __('SGST') }}</div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sgst_percentage" class="form-label">{{ __('Percentage') }}</label>
+                                <input type="text" class=" form-control" name="sgst_percentage" id="sgst_percentage" value="" placeholder="{{ __('SGST Percentage') }}">
+                                <small class="text-grey">{{ __('Note: Please add your GST no here.') }}</small>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sgst_tax_code" class="form-label">{{ __('Tax Code') }}</label>
+                                <input type="text" class=" form-control" name="sgst_tax_code" id="sgst_tax_code" value="" placeholder="{{ __('SGST Tax Code') }}">
+                                <small class="text-grey">{{ __('Note: Please add your SGST tax code here.') }}</small>
+                            </div>
+                        </div>
+                        <hr class="mt-4" style="">
+                        <div>{{ __('CGST') }}</div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cgst_percentage" class="form-label">{{ __('Percentage') }}</label>
+                                <input type="text" class=" form-control" name="cgst_percentage" id="cgst_percentage" value="" placeholder="{{ __('CGST Percentage') }}">
+                                <small class="text-grey">{{ __('Note: Please add your CGST percentage here.') }}</small>
+                            </div>
+                        </div>
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cgst_tax_code" class="form-label">{{ __('Tax Code') }}</label>
+                                <input type="text" class=" form-control" name="cgst_tax_code" id="cgst_tax_code" value="" placeholder="{{ __('CGST Tax Code') }}">
+                                <small class="text-grey">{{ __('Note: Please add your CGST tax code here.') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">

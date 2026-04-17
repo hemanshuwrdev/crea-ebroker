@@ -1,0 +1,32 @@
+/vendor
+/node_modules
+
+/npm-debug.log
+/yarn-error.log
+
+# Laravel
+/public/storage
+/public/hot
+/storage/*.key
+/storage/logs
+/storage/framework
+/bootstrap/cache
+
+# Env files
+.env
+.env.*
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Testing
+.phpunit.result.cache
+
+# Misc
+Homestead.yaml
+Homestead.json
+/.vagrant
+.sftp/

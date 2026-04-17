@@ -1,0 +1,6 @@
+some Text label and layout changes in receipts - 1 hour
+GST no, CGST (percentage and tax code) and SGST (percentage and tax code) setting option in admin - 10 - 20 minutes
+Receipt ma tax details percentage according dekharvanu che - 30 minutes
+Email ma reciepts javu joiye admin e configured karela emails par settings ma after payment success done in webhook - 1 hour 
+Export Payment trasactions in XLS, PDF in admin panel data list - 1 - 2 hour (need to check configuration)
+System upgrade no kehto but currently hold ma kidho che

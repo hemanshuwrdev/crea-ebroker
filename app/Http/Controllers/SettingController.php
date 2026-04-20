@@ -135,7 +135,8 @@ class SettingController extends Controller
             'schema_for_deeplink',
             'favicon_icon','company_logo','login_image',
             'bank_transfer_status',
-            'gst_no','cgst_tax_code','cgst_percentage','sgst_tax_code','sgst_percentage'
+            'gst_no','cgst_tax_code','cgst_percentage','sgst_tax_code','sgst_percentage',
+            'receipt_place','receipt_ac_details','receipt_current_bank_ac','receipt_bank_name','receipt_bank_ifsc'
         );
         $systemSettings = HelperService::getMultipleSettingData($settingsArray);
 

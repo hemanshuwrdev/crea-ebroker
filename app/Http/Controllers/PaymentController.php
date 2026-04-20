@@ -126,7 +126,7 @@ class PaymentController extends Controller
                     $tempRow['operate'] .= ' ' . BootstrapTableService::button('bi bi-file-earmark-text', '', $viewFilesButtonClasses, $viewFilesButtonCustomAttributes);
                 }
             } elseif ($row->payment_status === 'success') {
-                $tempRow['invoice_no'] = 'CREA-'.$row->id;
+                $tempRow['invoice_no'] = str_pad($row->id, 3, '0', STR_PAD_LEFT);
                 // Add View receipt button for successful payments
                 if (has_permissions('read', 'payment')) {
                     $receiptButtonClasses = ["btn", "icon", "btn-primary", "btn-sm", "rounded-pill"];
@@ -256,7 +256,7 @@ class PaymentController extends Controller
 
         try {
             $payment = PaymentTransaction::with('package', 'customer')->findOrFail($id);
-            $payment->invoice_no = 'CREA-'.$payment->id;
+            $payment->invoice_no = str_pad($payment->id, 3, '0', STR_PAD_LEFT);
 
             // Only allow viewing receipts for successful payments
             if ($payment->payment_status !== 'success') {

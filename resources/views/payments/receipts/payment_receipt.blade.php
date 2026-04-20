@@ -3,94 +3,122 @@
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <title>Payment Receipt</title>
+    <title>Tax Invoice</title>
     <style>
-        * {
-            font-family: DejaVu Sans, sans-serif;
-        }
-
         body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 14px;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10px;
             color: #333;
-            line-height: 1.5;
+            line-height: 1.4;
+            margin: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 20px;
-        }
-
-        .logo {
-            height: 80px;
-            max-width: 200px;
-            margin: 0 auto 10px;
-            display: block;
-        }
-
-        .receipt-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .receipt-number {
-            font-size: 16px;
-            color: #666;
-        }
-
-        .info-section {
-            margin-bottom: 20px;
-        }
-
-        .info-section h3 {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+        /* Header Section */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 10px;
         }
 
-        .info-row {
-            margin-bottom: 5px;
-            overflow: hidden;
+        .logo {
+            height: 70px;
+            display: block;
+            margin: 0 auto 10px;
         }
 
-        .info-row .label {
+        .title-row {
+            text-align: center;
+            font-size: 22px;
             font-weight: bold;
-            float: left;
-            width: 40%;
+            margin-bottom: 15px;
         }
 
-        .info-row .value {
-            float: left;
-            width: 60%;
-        }
-
-        .table {
+        .meta-info-table {
             width: 100%;
-            border-collapse: collapse;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .label-red {
+            color: #d9534f;
+            font-weight: normal;
+        }
+
+        /* Customer Section */
+        .section-title {
+            background: #fff;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+            margin: 15px 0 10px;
+        }
+
+        .info-table {
+            width: 100%;
             margin-bottom: 20px;
         }
 
-        .table th,
-        .table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        .info-table td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+
+        .w-20 {
+            width: 15%;
+            font-weight: bold;
+        }
+
+        .text-red-addr {}
+
+        /* Items Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
         }
 
         .table th {
-            background-color: #f8f8f8;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            vertical-align: top;
+        }
+
+        .description-cell {
+            line-height: 1.6;
+        }
+
+        .bank-details {
+
+            font-size: 13px;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: bold;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: bold;
         }
 
         .total-section {
@@ -115,119 +143,106 @@
             border-top: 1px solid #ddd;
             padding-top: 20px;
         }
-
-        .payment-status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .status-success {
-            background-color: #dff0d8;
-            color: #3c763d;
-        }
-
-        .clearfix:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="header">
+        <div class="text-center">
             @if(isset($settings['logo']) && !empty($settings['logo']))
-                <img src="{{ $settings['logo'] }}" alt="Company Logo" class="logo">
+                <img src="{{ $settings['logo'] }}" alt="Logo" class="logo">
             @endif
-            <div class="receipt-title">Tax Invoice</div>
-            <div class="receipt-number">Invoice No #: {{ $payment->invoice_no }}</div>
         </div>
 
-        <div class="info-section">
-            <h3>Customer Information</h3>
-            <div class="info-row clearfix">
-                <span class="label">Name:</span>
-                <span class="value">{{ $payment->customer->name }}</span>
-            </div>
-            <div class="info-row clearfix">
-                <span class="label">Email:</span>
-                <span class="value">{{ $payment->customer->email }}</span>
-            </div>
-            <div class="info-row clearfix">
-                <span class="label">Mobile:</span>
-                <span class="value">{{ $payment->customer->mobile }}</span>
-            </div>
-            <div class="info-row clearfix">
-                <span class="label">Payment Type:</span>
-                <span class="value">{{ ucfirst($payment->payment_type) }}</span>
-            </div>
-        </div>
+        <div class="title-row">Tax Invoice</div>
 
-        @if($settings['have_tax_data'])
-            <div class="info-section">
-                <h3>Tax Invoice</h3>
-                <div class="info-row clearfix">
-                    <span class="label">Invoice Date:</span>
-                    <span class="value">{{ $payment->created_at->format('d M Y, h:i A') }}</span>
-                </div>
-                <div class="info-row clearfix">
-                    <span class="label">GST No:</span>
-                    <span class="value">{{ $settings['gst_no'] }}</span>
-                </div>
-                {{-- @if($payment->payment_type == 'online payment')
-                <div class="info-row clearfix">
-                    <span class="label">Payment Gateway:</span>
-                    <span class="value">{{ ucfirst($payment->payment_gateway) }}</span>
-                </div>
-                @endif --}}
-            </div>
-        @endif
+        <table class="meta-info-table">
+            <tr>
+                <td style="width: 50%;">
+                    <strong>Invoice No #:</strong>
+                    {{ $payment->invoice_no }}<br>
+                    <strong>GST No:</strong> {{ $settings['gst_no'] ?? '' }}
+                </td>
+                <td style="width: 50%; text-align: right;">
+                    <strong>Invoice Date:</strong> {{ $payment->created_at->format('d M Y') }}<br>
+                    <span>Place:</span> <span style="font-weight: bold;">{{ $settings['receipt_place'] ?? 'Baglore, KR' }}</span>
+                </td>
+            </tr>
+        </table>
 
-        {{-- Package Details --}}
+        <div class="section-title">Customer Information</div>
+        <table class="info-table">
+            <tr>
+                <td class="w-20">Name:</td>
+                <td>{{ $payment->customer->name }}</td>
+            </tr>
+            <tr>
+                <td class="w-20">Email:</td>
+                <td>{{ $payment->customer->email }}</td>
+            </tr>
+            <tr>
+                <td class="w-20">Mobile:</td>
+                <td>{{ $payment->customer->mobile }}</td>
+            </tr>
+            <tr>
+                <td class="w-20">Address:</td>
+                <td class="text-red-addr">{{ $payment->customer->address }}</td>
+            </tr>
+            @if(!empty($payment->customer->gst_number))
+                <tr>
+                    <td class="w-20">GST No.:</td>
+                    <td>{{ $payment->customer->gst_number }}</td>
+                </tr>
+            @endif
+            <tr>
+                <td class="w-20">Payment Type:</td>
+                <td>{{ ucfirst($payment->payment_type) }}</td>
+            </tr>
+        </table>
+
+        <div style="font-weight: bold; margin-bottom: 10px;">Tax Invoice Details</div>
+
         <table class="table">
             <thead>
                 <tr>
-                    <th style="text-align: center;">Item</th>
-                    <th style="text-align: center;">Package</th>
-                    <th style="text-align: center;">Qty</th>
-                    <th style="text-align: center;">Price</th>
-                    <th style="text-align: center;">Net</th>
+                    <th>Item</th>
+                    <th>Package</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Net</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>{{ $payment->package->name}}<br>
-                        {{ $payment->package->description }}
+                    <td class="text-center">1</td>
+                    <td class="description-cell">
+                        <strong>{{ $payment->package->name }}</strong><br>
+                        {{-- This ensures descriptions are on separate lines --}}
+                        {!! nl2br(e($payment->package->description)) !!}
                     </td>
-                    <td style="text-align: right;">1</td>
-                    <td style="text-align: right;">{{ number_format($payment->amount, 2) }}</td>
-                    <td style="text-align: right;">{{ number_format($payment->amount, 2) }}</td>
+                    <td class="text-center">1</td>
+                    <td class="text-right">{{ number_format($payment->amount, 2) }}</td>
+                    <td class="text-right">{{ number_format($payment->amount, 2) }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: right;">Total Net</td>
-                    <td style="text-align: right;">{{ number_format($payment->amount, 2) }}</td>
+                    <td class="bold text-right">Total Net</td>
+                    <td class="bold text-right">{{ number_format($payment->amount, 2) }}</td>
                 </tr>
             </tbody>
         </table>
 
         @if($settings['have_tax_data'])
-            {{-- Tax Details --}}
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="text-align: center;">Tax Code</th>
-                        <th style="text-align: center;">Net</th>
-                        <th style="text-align: center;">Rate</th>
-                        <th style="text-align: center;">Description</th>
-                        <th style="text-align: center;">Amount</th>
+                        <th>Tax Code</th>
+                        <th>Net</th>
+                        <th>Rate</th>
+                        <th>Description</th>
+                        <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -237,32 +252,34 @@
                         $totalFinalAmount = $payment->amount + $sgst_tax + $cgst_tax;
                     @endphp
                     <tr>
-                        {{-- SGST --}}
-                        <td>{{ $settings['sgst_tax_code']}}</td>
-                        <td style="text-align: right;">0</td>
-                        <td style="text-align: right;">{{ number_format($settings['sgst_percentage'], 2) }}</td>
-                        <td style="text-align: right;">SGST</td>
-                        <td style="text-align: right;">{{ number_format($payment->amount * ($settings['sgst_percentage'] / 100), 2) }}</td>
+                        <td class="text-center">{{ $settings['sgst_tax_code'] }}</td>
+                        <td class="text-right">0</td>
+                        <td class="text-right">{{ number_format($settings['sgst_percentage'], 2) }}</td>
+                        <td class="text-center">SGST</td>
+                        <td class="text-right">{{ number_format($sgst_tax, 2) }}</td>
                     </tr>
                     <tr>
-                        {{-- CGST --}}
-                        <td>{{ $settings['cgst_tax_code']}}</td>
-                        <td style="text-align: right;">0</td>
-                        <td style="text-align: right;">{{ number_format($settings['cgst_percentage'], 2) }}</td>
-                        <td style="text-align: right;">CGST</td>
-                        <td style="text-align: right;">{{ number_format($payment->amount * ($settings['cgst_percentage'] / 100), 2) }}</td>
+                        <td class="text-center">{{ $settings['cgst_tax_code'] }}</td>
+                        <td class="text-right">0</td>
+                        <td class="text-right">{{ number_format($settings['cgst_percentage'], 2) }}</td>
+                        <td class="text-center">CGST</td>
+                        <td class="text-right">{{ number_format($cgst_tax, 2) }}</td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style="text-align: right;">Total Gross (Indian Rupee)</td>
-                        <td style="text-align: right;">{{ number_format($totalFinalAmount, 2) }}</td>
+                        <td class="bold text-right">Total Gross (Indian Rupee)</td>
+                        <td class="bold text-right">{{ number_format($totalFinalAmount, 2) }}</td>
                     </tr>
-
                 </tbody>
             </table>
         @endif
+        <div class="bank-details">
+            A/C Details: {{ $settings['receipt_ac_details'] ?? 'CONFEDERATION OF REAL ESTATE ASSOCIATES INDIA' }},
+            Current Bank A/C: {{ $settings['receipt_current_bank_ac'] ?? 'IDFC FIRST Bank:10133938666' }},
+            Bank IFSC: {{ $settings['receipt_bank_ifsc'] ?? 'IDFB0081103' }}
+        </div>
 
         <div class="total-section">
             <div class="total-row">

@@ -25,6 +25,7 @@ class Customer extends Authenticatable
         'password',
         'auth_id',
         'mobile',
+        'gst_number',
         'profile',
         'address',
         'fcm_id',

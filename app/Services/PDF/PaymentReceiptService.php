@@ -120,7 +120,7 @@ class PaymentReceiptService
      */
     private function getSettings(): array
     {
-        $types = ['company_name', 'company_address', 'company_phone', 'company_email', 'company_logo', 'company_tel1', 'company_tel2', 'currency_symbol', 'currency_code', 'gst_no','cgst_tax_code','cgst_percentage','sgst_tax_code','sgst_percentage'];
+        $types = ['company_name', 'company_address', 'company_phone', 'company_email', 'company_logo', 'company_tel1', 'company_tel2', 'currency_symbol', 'currency_code', 'gst_no','cgst_tax_code','cgst_percentage','sgst_tax_code','sgst_percentage', 'receipt_place','receipt_ac_details','receipt_current_bank_ac','receipt_bank_name','receipt_bank_ifsc'];
         $settings = Setting::whereIn('type', $types)->get()->pluck('data', 'type')->toArray();
         $haveTaxData = false;
         if(!empty($settings['gst_no']) && !empty($settings['cgst_tax_code']) && !empty($settings['cgst_percentage']) && !empty($settings['sgst_tax_code']) && !empty($settings['sgst_percentage'])){

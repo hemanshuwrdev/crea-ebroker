@@ -733,6 +733,48 @@
                 </div>
             </div>
 
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="divider pt-3">
+                            <h6 class="divider-text">{{ __('Receipt Settings') }}</h6>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="receipt_place" class="form-label">{{ __('Place in Receipt') }}</label>
+                                    <input type="text" class="form-control" name="receipt_place" id="receipt_place" value="{{ isset($systemSettings['receipt_place']) && $systemSettings['receipt_place'] != '' ? $systemSettings['receipt_place'] : '' }}" placeholder="{{ __('Place in Receipt') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="receipt_ac_details" class="form-label">{{ __('Account Details (A/C Name)') }}</label>
+                                    <input type="text" class="form-control" name="receipt_ac_details" id="receipt_ac_details" value="{{ isset($systemSettings['receipt_ac_details']) && $systemSettings['receipt_ac_details'] != '' ? $systemSettings['receipt_ac_details'] : '' }}" placeholder="{{ __('Account Details (A/C Name)') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="receipt_current_bank_ac" class="form-label">{{ __('Current Bank A/C') }}</label>
+                                    <input type="text" class="form-control" name="receipt_current_bank_ac" id="receipt_current_bank_ac" value="{{ isset($systemSettings['receipt_current_bank_ac']) && $systemSettings['receipt_current_bank_ac'] != '' ? $systemSettings['receipt_current_bank_ac'] : '' }}" placeholder="{{ __('Current Bank A/C') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="receipt_bank_name" class="form-label">{{ __('Bank Name') }}</label>
+                                    <input type="text" class="form-control" name="receipt_bank_name" id="receipt_bank_name" value="{{ isset($systemSettings['receipt_bank_name']) && $systemSettings['receipt_bank_name'] != '' ? $systemSettings['receipt_bank_name'] : '' }}" placeholder="{{ __('Bank Name') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="receipt_bank_ifsc" class="form-label">{{ __('Bank IFSC') }}</label>
+                                    <input type="text" class="form-control" name="receipt_bank_ifsc" id="receipt_bank_ifsc" value="{{ isset($systemSettings['receipt_bank_ifsc']) && $systemSettings['receipt_bank_ifsc'] != '' ? $systemSettings['receipt_bank_ifsc'] : '' }}" placeholder="{{ __('Bank IFSC') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="col-md-12">
                 <div class="card">
@@ -827,12 +869,12 @@
             setTimeout(() => {
                 bankDetailsRepeater.setList([
                     @foreach($bankDetailsFields as $key => $bankDetail)
-                                                                                {
+                                                                                        {
                             title: "{{$bankDetail['title']}}",
                             value: "{{$bankDetail['value']}}",
                         },
                     @endforeach
-                                            ]);
+                                                ]);
             }, 100);
         });
 

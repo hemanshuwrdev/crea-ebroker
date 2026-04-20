@@ -445,7 +445,7 @@ class ApiController extends Controller
 
                 // update the Data passed in payload
                 $fieldsToUpdate = $request->only([
-                    'name', 'email', 'mobile', 'fcm_id', 'address', 'notification', 'about_me',
+                    'name', 'email', 'mobile', 'gst_number', 'fcm_id', 'address', 'notification', 'about_me',
                     'facebook_id', 'twiiter_id', 'instagram_id', 'youtube_id', 'latitude', 'longitude',
                     'city', 'state', 'country'
                 ]);

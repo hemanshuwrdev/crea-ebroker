@@ -25,16 +25,11 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        <table class="table-light" aria-describedby="mydesc" class='table-striped' id="table_list"
-                            data-toggle="table" data-url="{{ route('payment.list') }}" data-click-to-select="true"
-                            data-side-pagination="server" data-pagination="true"
-                            data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-search-align="right"
-                            data-toolbar="#toolbar" data-show-columns="true" data-show-refresh="true"
-                            data-trim-on-search="false" data-responsive="true" data-sort-name="id" data-sort-order="desc"
-                            data-pagination-successively-size="3" data-query-params="queryParams">
+                        <table class="table-light" aria-describedby="mydesc" class='table-striped' id="table_list" data-toggle="table" data-url="{{ route('payment.list') }}" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-search-align="right" data-toolbar="#toolbar" data-show-columns="true" data-show-refresh="true" data-trim-on-search="false" data-responsive="true" data-sort-name="id" data-sort-order="desc" data-pagination-successively-size="3" data-query-params="queryParams">
                             <thead>
                                 <tr>
                                     <th scope="col" data-field="id" data-sortable="true"> {{ __('ID') }}</th>
+                                    <th scope="col" data-field="invoice_no" data-align="center"> {{ __('Invoice No') }}</th>
                                     <th scope="col" data-field="customer.name" data-align="center" data-sortable="false"> {{ __('Client Name') }}</th>
                                     <th scope="col" data-field="package.name" data-align="center" data-sortable="false"> {{ __('Package Name') }} </th>
                                     <th scope="col" data-field="amount" data-align="center" data-sortable="true" data-formatter="paymentAmountFormatter"> {{ __('Amount') }} </th>
@@ -89,10 +84,10 @@
 
         function operateEvents(e) {
             return {
-                'click .view-files': function(e, value, row, index) {
-                    if(row.bank_receipt_files.length){
+                'click .view-files': function (e, value, row, index) {
+                    if (row.bank_receipt_files.length) {
                         $('.documents-div').empty();
-                        $.each(row.bank_receipt_files, function(key, value) {
+                        $.each(row.bank_receipt_files, function (key, value) {
                             var url = value.file; // Your URL
                             var filename = value.file_name;
                             var documentSvgImage = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="30" width="30" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M208 64h66.75a32 32 0 0122.62 9.37l141.26 141.26a32 32 0 019.37 22.62V432a48 48 0 01-48 48H192a48 48 0 01-48-48V304"></path><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M288 72v120a32 32 0 0032 32h120"></path><path fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M160 80v152a23.69 23.69 0 01-24 24c-12 0-24-9.1-24-24V88c0-30.59 16.57-56 48-56s48 24.8 48 55.38v138.75c0 43-27.82 77.87-72 77.87s-72-34.86-72-77.87V144"></path></svg>`;
@@ -101,30 +96,30 @@
 
                             $('.documents-div').append(
                                 `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3 mt-2 bg-light rounded m-2 p-2">
-                                    <div class="docs_main_div">
-                                        <div class="doc_icon">
-                                            ${documentSvgImage}
-                                        </div>
-                                        <div class="doc_title">
-                                            <span title="${filename}">${filename}</span>
-                                        </div>
-                                        <div class="doc_download_button">
-                                            <a href="${url}" target="_blank">
-                                                <span>
-                                                    ${downloadImg}
-                                                </span>
-                                                <span>${downloadText}</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>`
+                                                <div class="docs_main_div">
+                                                    <div class="doc_icon">
+                                                        ${documentSvgImage}
+                                                    </div>
+                                                    <div class="doc_title">
+                                                        <span title="${filename}">${filename}</span>
+                                                    </div>
+                                                    <div class="doc_download_button">
+                                                        <a href="${url}" target="_blank">
+                                                            <span>
+                                                                ${downloadImg}
+                                                            </span>
+                                                            <span>${downloadText}</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>`
                             );
                         });
-                    }else{
+                    } else {
                         $('.documents-div').append(
                             `<span class="no-data-found-span">
-                                ${window.trans["No Data Found"]}
-                            </span>`
+                                            ${window.trans["No Data Found"]}
+                                        </span>`
                         );
                     }
                 }
@@ -132,7 +127,7 @@
         }
 
         // Change Event on Verification Required for user toggle
-        $(document).on('click', ".payment-status-btn", function(e) {
+        $(document).on('click', ".payment-status-btn", function (e) {
             e.preventDefault();
             let status = $(this).data("status");
             let url = $(this).data("url");
@@ -141,7 +136,7 @@
             data.append('status', status);
             data.append('id', id);
 
-            if(status == 'success'){
+            if (status == 'success') {
                 Swal.fire({
                     title: window.trans["Are you sure to make this payment success ?"],
                     icon: 'success',

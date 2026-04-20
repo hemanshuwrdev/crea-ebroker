@@ -134,7 +134,8 @@ class SettingController extends Controller
             'flutterwave_public_key','flutterwave_secret_key','flutterwave_encryption_key','flutterwave_webhook_url','flutterwave_currency','flutterwave_status',
             'schema_for_deeplink',
             'favicon_icon','company_logo','login_image',
-            'bank_transfer_status'
+            'bank_transfer_status',
+            'gst_no','cgst_tax_code','cgst_percentage','sgst_tax_code','sgst_percentage'
         );
         $systemSettings = HelperService::getMultipleSettingData($settingsArray);
 

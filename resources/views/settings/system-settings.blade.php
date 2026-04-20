@@ -21,7 +21,7 @@
 @section('content')
     <section class="section">
         {{-- <form class="form" id="myForm" action="{{ url('set_settings') }}" data-parsley-validate method="POST" id="setting_form" enctype="multipart/form-data"> --}}
-        {!! Form::open(['route' => 'store-settings', 'data-parsley-validate', 'class' => 'create-form', 'data-success-function'=> "formSuccessFunction",'enctype' => 'multipart/form-data']) !!}
+            {!! Form::open(['route' => 'store-settings', 'data-parsley-validate', 'class' => 'create-form', 'data-success-function' => "formSuccessFunction", 'enctype' => 'multipart/form-data']) !!}
 
             {{ csrf_field() }}
             <div class="form-group row">
@@ -118,8 +118,7 @@
                                         <select name="default_language" id="default_language" class="choosen-select form-select form-control-sm" required>
                                             @foreach ($languages as $row)
                                                 {{ $row }}
-                                                <option value="{{ $row->code }}"
-                                                    {{ isset($systemSettings['default_language']) && $systemSettings['default_language'] == $row->code ? 'selected' : '' }}>
+                                                <option value="{{ $row->code }}" {{ isset($systemSettings['default_language']) && $systemSettings['default_language'] == $row->code ? 'selected' : '' }}>
                                                     {{ $row->name }}
                                                 </option>
                                             @endforeach
@@ -141,8 +140,8 @@
                                                     $offsetHours = abs(floor($offset / 3600));
                                                     $offsetMinutes = abs(floor(($offset % 3600) / 60));
                                                     $offsetString = ($offset < 0 ? '-' : '+') .
-                                                                    str_pad($offsetHours, 2, '0', STR_PAD_LEFT) . ':' .
-                                                                    str_pad($offsetMinutes, 2, '0', STR_PAD_LEFT);
+                                                        str_pad($offsetHours, 2, '0', STR_PAD_LEFT) . ':' .
+                                                        str_pad($offsetMinutes, 2, '0', STR_PAD_LEFT);
                                                 @endphp
                                                 <option value="{{ $timezone }}" {{ isset($systemSettings['timezone']) && $systemSettings['timezone'] == $timezone ? 'selected' : '' }}>
                                                     {{ $timezone }} (UTC {{ $offsetString }})
@@ -215,10 +214,10 @@
                                     <div class="col-sm-12 col-md-6 mt-2 form-group mandatory">
                                         <label class="col-sm-12 form-label mt-3" for="distance-option">{{ __('Distance Options') }}</label>
                                         <select name="distance_option" id="distance-option" class="choosen-select form-select form-control-sm" required>
-                                            <option  {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'km' ? 'selected' : '' }} value="km">{{__('Kilometers')}}</option>
-                                            <option  {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'm' ? 'selected' : '' }} value="m">{{__('Meters')}}</option>
-                                            <option  {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'mi' ? 'selected' : '' }} value="mi">{{__('Miles')}}</option>
-                                            <option  {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'yd' ? 'selected' : '' }} value="yd">{{__('Yards')}}</option>
+                                            <option {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'km' ? 'selected' : '' }} value="km">{{__('Kilometers')}}</option>
+                                            <option {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'm' ? 'selected' : '' }} value="m">{{__('Meters')}}</option>
+                                            <option {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'mi' ? 'selected' : '' }} value="mi">{{__('Miles')}}</option>
+                                            <option {{ isset($systemSettings['distance_option']) && $systemSettings['distance_option'] == 'yd' ? 'selected' : '' }} value="yd">{{__('Yards')}}</option>
                                         </select>
                                     </div>
 
@@ -232,13 +231,13 @@
                                     {{-- Web URL --}}
                                     <div class="col-sm-12 col-md-6 mt-2 form-group">
                                         <label class="form-label mt-3">{{ __('Web URL') }}</label>
-                                        <input name="web_url" id="web-url" type="text" class="form-control" placeholder="{{ __('Web URL') }}" value="{{ ( isset($systemSettings['web_url']) && $systemSettings['web_url'] != '' ? $systemSettings['web_url'] : '' )}}">
+                                        <input name="web_url" id="web-url" type="text" class="form-control" placeholder="{{ __('Web URL') }}" value="{{ (isset($systemSettings['web_url']) && $systemSettings['web_url'] != '' ? $systemSettings['web_url'] : '')}}">
                                     </div>
 
                                     {{-- Text after property submission --}}
                                     <div class="col-sm-12 col-md-6 mt-2 form-group mandatory">
                                         <label class="col-sm-12 form-label mt-3">{{ __('Text after property submission') }}</label>
-                                        <textarea name="text_property_submission" class="form-control" rows="2" placeholder="{{ __("Text after property submission") }}" required>{{ ( isset($systemSettings['text_property_submission']) && $systemSettings['text_property_submission'] != '' ? $systemSettings['text_property_submission'] : '' )}}</textarea>
+                                        <textarea name="text_property_submission" class="form-control" rows="2" placeholder="{{ __("Text after property submission") }}" required>{{ (isset($systemSettings['text_property_submission']) && $systemSettings['text_property_submission'] != '' ? $systemSettings['text_property_submission'] : '')}}</textarea>
                                     </div>
 
 
@@ -285,8 +284,8 @@
                             <div class="col-sm-12 col-md-6 mt-2 form-group mandatory" id="otp-services-provider-div" style="display: none">
                                 <label class="col-sm-12 form-label-mandatory" for="otp-services-provider">{{ __('OTP Services Provider') }}</label>
                                 <select name="otp_service_provider" id="otp-services-provider" class="choosen-select form-select form-control-sm">
-                                    <option  {{ isset($systemSettings['otp_service_provider']) && $systemSettings['otp_service_provider'] == 'firebase' ? 'selected' : '' }} value="firebase">{{__('Firebase')}}</option>
-                                    <option  {{ isset($systemSettings['otp_service_provider']) && $systemSettings['otp_service_provider'] == 'twilio' ? 'selected' : '' }} value="twilio">{{__('Twilio')}}</option>
+                                    <option {{ isset($systemSettings['otp_service_provider']) && $systemSettings['otp_service_provider'] == 'firebase' ? 'selected' : '' }} value="firebase">{{__('Firebase')}}</option>
+                                    <option {{ isset($systemSettings['otp_service_provider']) && $systemSettings['otp_service_provider'] == 'twilio' ? 'selected' : '' }} value="twilio">{{__('Twilio')}}</option>
                                 </select>
                             </div>
 
@@ -505,9 +504,8 @@
                             <label class="form-check-label">{{ __('Stripe Currency Symbol') }}</label>
                             <select name="stripe_currency" id="stripe_currency" class="choosen-select form-select form-control-sm">
                                 @foreach ($stripe_currencies as $value)
-                                <option value={{ $value }}
-                                {{ isset($systemSettings['stripe_currency']) && $systemSettings['stripe_currency'] == $value ? 'selected' : '' }}>
-                                {{ $value }}</option>
+                                    <option value={{ $value }} {{ isset($systemSettings['stripe_currency']) && $systemSettings['stripe_currency'] == $value ? 'selected' : '' }}>
+                                        {{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -565,7 +563,7 @@
                         {{-- Flutterwave Webhook URL --}}
                         <div class="col-sm-12 col-md-6 mt-2">
                             <label class="form-label">{{ __('Flutterwave Webhook URL') }}</label>
-                                <input name="flutterwave_webhook_url" type="text" class="form-control" placeholder="{{ __('Flutterwave Webhook URL') }}" value="{{ (env('DEMO_MODE') ? ( env('DEMO_MODE') == true && Auth::user()->email == 'superadmin@gmail.com' ? ( isset($systemSettings['flutterwave_webhook_url']) && $systemSettings['flutterwave_webhook_url'] != '' ? $systemSettings['flutterwave_webhook_url'] : '' ) : '****************************' ) : ( isset($systemSettings['flutterwave_webhook_url']) && $systemSettings['flutterwave_webhook_url'] != '' ? $systemSettings['flutterwave_webhook_url'] : '' ))}}">
+                            <input name="flutterwave_webhook_url" type="text" class="form-control" placeholder="{{ __('Flutterwave Webhook URL') }}" value="{{ (env('DEMO_MODE') ? ( env('DEMO_MODE') == true && Auth::user()->email == 'superadmin@gmail.com' ? ( isset($systemSettings['flutterwave_webhook_url']) && $systemSettings['flutterwave_webhook_url'] != '' ? $systemSettings['flutterwave_webhook_url'] : '' ) : '****************************' ) : ( isset($systemSettings['flutterwave_webhook_url']) && $systemSettings['flutterwave_webhook_url'] != '' ? $systemSettings['flutterwave_webhook_url'] : '' ))}}">
                         </div>
 
                         {{-- Flutterwave Currency Symbol --}}
@@ -685,7 +683,7 @@
                 </div>
             </div>
 
-             <div class="card">
+            <div class="card">
                 <div class="card-body">
                     <div class="form-group row">
                         {{-- GST Setting --}}
@@ -695,39 +693,39 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="gstno" class="form-label">{{ __('GST No.') }}</label>
-                                <input type="text" class=" form-control" name="gst_no" id="gstno" value="" placeholder="{{ __('Your GST No.') }}">
+                                <input type="text" class=" form-control" name="gst_no" id="gstno" value="{{ isset($systemSettings['gst_no']) && $systemSettings['gst_no'] != '' ? $systemSettings['gst_no'] : '' }}" placeholder=" {{ __('Your GST No.') }}">
                                 <small class="text-grey">{{ __('Note: Please add your GST no here.') }}</small>
                             </div>
                         </div>
                         <hr class="mt-4" style="">
                         <div>{{ __('SGST') }}</div>
-                         <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="sgst_percentage" class="form-label">{{ __('Percentage') }}</label>
-                                <input type="text" class=" form-control" name="sgst_percentage" id="sgst_percentage" value="" placeholder="{{ __('SGST Percentage') }}">
-                                <small class="text-grey">{{ __('Note: Please add your GST no here.') }}</small>
+                                <input type="number" min="1" max="100" class=" form-control" name="sgst_percentage" id="sgst_percentage" value="{{ isset($systemSettings['sgst_percentage']) && $systemSettings['sgst_percentage'] != '' ? $systemSettings['sgst_percentage'] : '' }}" placeholder=" {{ __('SGST Percentage') }}">
+                                <small class="text-grey">{{ __('Note: Please add your SGST percentage here.') }}</small>
                             </div>
                         </div>
-                         <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="sgst_tax_code" class="form-label">{{ __('Tax Code') }}</label>
-                                <input type="text" class=" form-control" name="sgst_tax_code" id="sgst_tax_code" value="" placeholder="{{ __('SGST Tax Code') }}">
+                                <input type="text" class=" form-control" name="sgst_tax_code" id="sgst_tax_code" value="{{ isset($systemSettings['sgst_tax_code']) && $systemSettings['sgst_tax_code'] != '' ? $systemSettings['sgst_tax_code'] : '' }}" placeholder=" {{ __('SGST Tax Code') }}">
                                 <small class="text-grey">{{ __('Note: Please add your SGST tax code here.') }}</small>
                             </div>
                         </div>
                         <hr class="mt-4" style="">
                         <div>{{ __('CGST') }}</div>
-                         <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cgst_percentage" class="form-label">{{ __('Percentage') }}</label>
-                                <input type="text" class=" form-control" name="cgst_percentage" id="cgst_percentage" value="" placeholder="{{ __('CGST Percentage') }}">
+                                <input type="text" min="1" max="100" class=" form-control" name="cgst_percentage" id="cgst_percentage" value="{{ isset($systemSettings['cgst_percentage']) && $systemSettings['cgst_percentage'] != '' ? $systemSettings['cgst_percentage'] : '' }}" placeholder=" {{ __('CGST Percentage') }}">
                                 <small class="text-grey">{{ __('Note: Please add your CGST percentage here.') }}</small>
                             </div>
                         </div>
-                         <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cgst_tax_code" class="form-label">{{ __('Tax Code') }}</label>
-                                <input type="text" class=" form-control" name="cgst_tax_code" id="cgst_tax_code" value="" placeholder="{{ __('CGST Tax Code') }}">
+                                <input type="text" class=" form-control" name="cgst_tax_code" id="cgst_tax_code" value="{{ isset($systemSettings['cgst_tax_code']) && $systemSettings['cgst_tax_code'] != '' ? $systemSettings['cgst_tax_code'] : '' }}" placeholder=" {{ __('CGST Tax Code') }}">
                                 <small class="text-grey">{{ __('Note: Please add your CGST tax code here.') }}</small>
                             </div>
                         </div>
@@ -751,7 +749,7 @@
                                     <input type="file" class="filepond" id="favicon_icon" name="favicon_icon" {{ isset($systemSettings['favicon_icon']) && $systemSettings['favicon_icon'] == '' ? 'required' : '' }} accept="image/png,image/jpg,image/jpeg">
                                     @if (isset($systemSettings['favicon_icon']) && $systemSettings['favicon_icon'] != '')
                                         <div class="title_img mt-2">
-                                            <img src="{{ url('assets/images/logo/'.$systemSettings['favicon_icon']) }}" alt="Image" class="img-fluid" width="100" height="100">
+                                            <img src="{{ url('assets/images/logo/' . $systemSettings['favicon_icon']) }}" alt="Image" class="img-fluid" width="100" height="100">
                                         </div>
                                     @endif
                                 </div>
@@ -764,7 +762,7 @@
                                     <input type="file" class="filepond" id="company_logo" name="company_logo" {{ isset($systemSettings['company_logo']) && $systemSettings['company_logo'] == '' ? 'required' : '' }} accept="image/png,image/jpg,image/jpeg">
                                     @if (isset($systemSettings['company_logo']) && $systemSettings['company_logo'] != '')
                                         <div class="title_img mt-2">
-                                            <img src="{{ url('assets/images/logo/'.$systemSettings['company_logo']) }}" alt="Image" class="img-fluid" width="100" height="100">
+                                            <img src="{{ url('assets/images/logo/' . $systemSettings['company_logo']) }}" alt="Image" class="img-fluid" width="100" height="100">
                                         </div>
                                     @endif
                                 </div>
@@ -777,7 +775,7 @@
                                     <input type="file" class="filepond" id="login_image" name="login_image" {{ isset($systemSettings['login_image']) && $systemSettings['login_image'] == '' ? 'required' : '' }} accept="image/png,image/jpg,image/jpeg">
                                     @if (isset($systemSettings['login_image']) && $systemSettings['login_image'] != '')
                                         <div class="title_img mt-2">
-                                            <img src="{{ url('assets/images/bg/'.$systemSettings['login_image']) }}" alt="Image" class="img-fluid" width="100" height="100">
+                                            <img src="{{ url('assets/images/bg/' . $systemSettings['login_image']) }}" alt="Image" class="img-fluid" width="100" height="100">
                                         </div>
                                     @else
                                         <div class="title_img mt-2">
@@ -793,13 +791,13 @@
             <div class="col-12 d-flex justify-content-end">
                 <button type="submit" name="btnAdd" value="btnAdd" class="btn btn-primary me-1 mb-1">{{ __('Save') }}</button>
             </div>
-        {!! Form::close() !!}
+            {!! Form::close() !!}
 
     </section>
 @endsection
 
 @section('script')
-<script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
             let countryValue = "{{ isset($systemSettings['currency_code']) && $systemSettings['currency_code'] != '' ? $systemSettings['currency_code'] : '' }}";
             $("#currency-code").val(countryValue).trigger("change").promise().done(function () {
@@ -810,7 +808,7 @@
             });
 
             // Initialize bank details visibility based on saved state
-            if($("#bank_details_enabled").val() == "1") {
+            if ($("#bank_details_enabled").val() == "1") {
                 $(".bank-details-fields").show();
 
                 // After DOM is fully rendered, check if we need to add a default item
@@ -829,44 +827,44 @@
             setTimeout(() => {
                 bankDetailsRepeater.setList([
                     @foreach($bankDetailsFields as $key => $bankDetail)
-                        {
+                                                                                {
                             title: "{{$bankDetail['title']}}",
                             value: "{{$bankDetail['value']}}",
                         },
                     @endforeach
-                ]);
+                                            ]);
             }, 100);
         });
 
 
-        $(document).on('click', '#favicon_icon', function(e) {
+        $(document).on('click', '#favicon_icon', function (e) {
 
             $('.favicon_icon').hide();
 
         });
-        $(document).on('click', '#company_logo', function(e) {
+        $(document).on('click', '#company_logo', function (e) {
 
             $('.company_logo').hide();
 
         });
 
-        $(document).on('click', '#login_image', function(e) {
+        $(document).on('click', '#login_image', function (e) {
             $('.login_image').hide();
         });
 
 
-        const checkboxes = document.querySelectorAll('input[type=checkbox][role=switch][name=op]', );
+        const checkboxes = document.querySelectorAll('input[type=checkbox][role=switch][name=op]',);
         checkboxes.forEach((checkbox) => {
             checkbox.addEventListener('change', (event) => {
                 if (event.target.checked) {
                     checkboxes.forEach((checkbox) => {
                         if (checkbox !== event.target) {
                             checkbox.checked = false;
-                            $("#switch_paypal_gateway").is(':checked') ? $("#paypal_gateway").val(1) : $("#paypal_gateway") .val(0);
-                            $("#switch_razorpay_gateway").is(':checked') ? $("#razorpay_gateway").val(1) : $("#razorpay_gateway") .val(0);
-                            $("#switch_paystack_gateway").is(':checked') ? $("#paystack_gateway").val(1) : $("#paystack_gateway") .val(0);
-                            $("#switch_stripe_gateway").is(':checked') ? $("#stripe_gateway").val(1) : $("#stripe_gateway") .val(0);
-                            $("#switch_flutterwave_status").is(':checked') ? $("#flutterwave_status").val(1) : $("#flutterwave_status") .val(0);
+                            $("#switch_paypal_gateway").is(':checked') ? $("#paypal_gateway").val(1) : $("#paypal_gateway").val(0);
+                            $("#switch_razorpay_gateway").is(':checked') ? $("#razorpay_gateway").val(1) : $("#razorpay_gateway").val(0);
+                            $("#switch_paystack_gateway").is(':checked') ? $("#paystack_gateway").val(1) : $("#paystack_gateway").val(0);
+                            $("#switch_stripe_gateway").is(':checked') ? $("#stripe_gateway").val(1) : $("#stripe_gateway").val(0);
+                            $("#switch_flutterwave_status").is(':checked') ? $("#flutterwave_status").val(1) : $("#flutterwave_status").val(0);
                         }
                     });
                 }
@@ -874,29 +872,29 @@
         });
 
 
-        $("#switch_svg_clr").on('change', function() {
-            $("#switch_svg_clr").is(':checked') ? $("#svg_clr").val(1) : $("#svg_clr") .val(0);
+        $("#switch_svg_clr").on('change', function () {
+            $("#switch_svg_clr").is(':checked') ? $("#svg_clr").val(1) : $("#svg_clr").val(0);
         });
 
 
-        $("#switch_force_update").on('change', function() {
-            $("#switch_force_update").is(':checked') ? $("#force_update").val(1) : $("#force_update") .val(0);
+        $("#switch_force_update").on('change', function () {
+            $("#switch_force_update").is(':checked') ? $("#force_update").val(1) : $("#force_update").val(0);
         });
 
-        $("#switch_number_with_suffix").on('change', function() {
-            $("#switch_number_with_suffix").is(':checked') ? $("#number_with_suffix").val(1) : $( "#number_with_suffix") .val(0);
+        $("#switch_number_with_suffix").on('change', function () {
+            $("#switch_number_with_suffix").is(':checked') ? $("#number_with_suffix").val(1) : $("#number_with_suffix").val(0);
         });
 
         // Change Event on OTP login Toggle
-        $("#number-with-otp-login-toggle").on('change', function() {
+        $("#number-with-otp-login-toggle").on('change', function () {
             if ($("#number-with-otp-login-toggle").is(':checked')) {
                 // If number with otp login is checked then make database value 1, show the otp services provider div, and trigger select option
                 $("#number-with-otp-login").val(1);
                 $("#otp-services-provider-div").show(100);
                 $("#otp-services-provider").trigger('change');
-            }else{
+            } else {
                 // make database value 0, hide services provider div hide
-                $("#number-with-otp-login") .val(0);
+                $("#number-with-otp-login").val(0);
                 $("#otp-services-provider-div").hide();
                 $("#twilio-sms-settings-div").hide()
                 $(".twilio-account-settings").removeAttr('required');
@@ -905,55 +903,55 @@
         });
 
         // Change event on OTP services provider selection
-        $("#otp-services-provider").on('change',function(){
+        $("#otp-services-provider").on('change', function () {
             // Get the value of selection
             let otpServicesProviderValue = $(this).val();
-            if(otpServicesProviderValue == 'twilio'){
+            if (otpServicesProviderValue == 'twilio') {
                 // IF Twilio then show the div of twilio sms settings with all the details required attribute
                 $("#twilio-sms-settings-div").show();
-                $(".twilio-account-settings").attr('required',true);
-            }else{
+                $(".twilio-account-settings").attr('required', true);
+            } else {
                 // IF other then hide the div of twilio sms settings and remove required attribute in all twilio settings
                 $(".twilio-account-settings").removeAttr('required');
                 $("#twilio-sms-settings-div").hide();
             }
         })
 
-        $("#social-login-toggle").on('change', function() {
-            $("#social-login-toggle").is(':checked') ? $("#social-login").val(1) : $( "#social-login") .val(0);
+        $("#social-login-toggle").on('change', function () {
+            $("#social-login-toggle").is(':checked') ? $("#social-login").val(1) : $("#social-login").val(0);
         });
 
-        $("#switch_sandbox_mode").on('change', function() {
-            $("#switch_sandbox_mode").is(':checked') ? $("#sandbox_mode").val(1) : $("#sandbox_mode") .val(0);
+        $("#switch_sandbox_mode").on('change', function () {
+            $("#switch_sandbox_mode").is(':checked') ? $("#sandbox_mode").val(1) : $("#sandbox_mode").val(0);
         });
 
-        $("#switch_paypal_gateway").on('change', function() {
-            $("#switch_paypal_gateway").is(':checked') ? $("#paypal_gateway").val(1) : $("#paypal_gateway") .val(0);
+        $("#switch_paypal_gateway").on('change', function () {
+            $("#switch_paypal_gateway").is(':checked') ? $("#paypal_gateway").val(1) : $("#paypal_gateway").val(0);
         });
 
-        $("#switch_razorpay_gateway").on('change', function() {
-            $("#switch_razorpay_gateway").is(':checked') ? $("#razorpay_gateway").val(1) : $("#razorpay_gateway") .val(0);
+        $("#switch_razorpay_gateway").on('change', function () {
+            $("#switch_razorpay_gateway").is(':checked') ? $("#razorpay_gateway").val(1) : $("#razorpay_gateway").val(0);
         });
 
-        $("#switch_stripe_gateway").on('change', function() {
-            $("#switch_stripe_gateway").is(':checked') ? $("#stripe_gateway").val(1) : $("#stripe_gateway") .val(0);
+        $("#switch_stripe_gateway").on('change', function () {
+            $("#switch_stripe_gateway").is(':checked') ? $("#stripe_gateway").val(1) : $("#stripe_gateway").val(0);
         });
 
-        $("#switch_paystack_gateway").on('change', function() {
-            $("#switch_paystack_gateway").is(':checked') ? $("#paystack_gateway").val(1) : $("#paystack_gateway") .val(0);
+        $("#switch_paystack_gateway").on('change', function () {
+            $("#switch_paystack_gateway").is(':checked') ? $("#paystack_gateway").val(1) : $("#paystack_gateway").val(0);
         });
 
-        $("#switch_flutterwave_status").on('change', function() {
-            $("#switch_flutterwave_status").is(':checked') ? $("#flutterwave_status").val(1) : $("#flutterwave_status") .val(0);
+        $("#switch_flutterwave_status").on('change', function () {
+            $("#switch_flutterwave_status").is(':checked') ? $("#flutterwave_status").val(1) : $("#flutterwave_status").val(0);
         });
 
-        $("#switch_auto_approve_edited_listings").on('change', function() {
-            $("#switch_auto_approve_edited_listings").is(':checked') ? $("#auto_approve_edited_listings").val(1) : $("#auto_approve_edited_listings") .val(0);
+        $("#switch_auto_approve_edited_listings").on('change', function () {
+            $("#switch_auto_approve_edited_listings").is(':checked') ? $("#auto_approve_edited_listings").val(1) : $("#auto_approve_edited_listings").val(0);
         });
 
-        $("#switch_bank_details_enabled").on('change', function() {
+        $("#switch_bank_details_enabled").on('change', function () {
             // Update hidden input value based on switch state
-            if($(this).is(':checked')) {
+            if ($(this).is(':checked')) {
                 $("#bank_details_enabled").val(1);
                 $(".bank-details-fields").show();
 
@@ -984,7 +982,7 @@
         const hiddenRGBAInput = document.getElementById("hiddenRGBA");
 
 
-        systemColorInput.addEventListener("change", function() {
+        systemColorInput.addEventListener("change", function () {
             const selectedColor = systemColorInput.value;
             const alpha = 0.15; // You can adjust the alpha value as needed (1 for fully opaque)
             const rgba = hexToRgb(selectedColor);
@@ -993,7 +991,7 @@
 
 
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var companyname = $('#company_name').val();
             sessionStorage.setItem('comapanyname', $('#company_name').val());
             const newValue = `"${companyname}"`;
@@ -1001,7 +999,7 @@
             hiddenRGBAInput.value = rgba;
 
             // Bind change to login methods
-            $("#number-with-otp-login-toggle, #social-login-toggle").change(function() {
+            $("#number-with-otp-login-toggle, #social-login-toggle").change(function () {
                 var loginCheckBoxToggle = $(this).attr("id") === "number-with-otp-login-toggle" ? "social-login-toggle" : "number-with-otp-login-toggle";
                 var loginCheckbox = $("#" + loginCheckBoxToggle);
 
@@ -1014,7 +1012,7 @@
             $("#number-with-otp-login-toggle").trigger('change')
         });
 
-        $('.fav_icon_btn').click(function() {
+        $('.fav_icon_btn').click(function () {
             $('#fav_image').click();
 
 
@@ -1026,7 +1024,7 @@
 
             }
         }
-        $('.btn_comapany_logo').click(function() {
+        $('.btn_comapany_logo').click(function () {
             $('#company_logo').click();
 
 
@@ -1041,7 +1039,7 @@
 
 
 
-        $('.btn_login_image').click(function() {
+        $('.btn_login_image').click(function () {
             $('#login_image').click();
 
 
@@ -1054,9 +1052,8 @@
             }
         }
 
-        function formSuccessFunction(){
+        function formSuccessFunction() {
             window.location.reload();
         }
     </script>
 @endsection
-

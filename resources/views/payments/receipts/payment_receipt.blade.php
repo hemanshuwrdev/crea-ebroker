@@ -102,10 +102,9 @@
         }
 
         .bank-details {
-
             font-size: 13px;
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             font-weight: bold;
         }
 
@@ -136,12 +135,18 @@
         }
 
         .footer {
-            margin-top: 50px;
+            margin-top: 30px;
             text-align: center;
             font-size: 12px;
             color: #777;
             border-top: 1px solid #ddd;
             padding-top: 20px;
+        }
+
+        .amount-in-words {
+            text-align: right;
+            margin-bottom: 15px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -250,6 +255,10 @@
                         $sgst_tax = $payment->amount * ($settings['sgst_percentage'] / 100);
                         $cgst_tax = $payment->amount * ($settings['cgst_percentage'] / 100);
                         $totalFinalAmount = $payment->amount + $sgst_tax + $cgst_tax;
+
+                        // Amount in words logic (requires NumberFormatter or standard PHP)
+                        $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+                        $amountInWords = ucwords($f->format($totalFinalAmount));
                     @endphp
                     <tr>
                         <td class="text-center">{{ $settings['sgst_tax_code'] }}</td>
@@ -275,10 +284,9 @@
                 </tbody>
             </table>
         @endif
-        <div class="bank-details">
-            A/C Details: {{ $settings['receipt_ac_details'] ?? 'CONFEDERATION OF REAL ESTATE ASSOCIATES INDIA' }},
-            Current Bank A/C: {{ $settings['receipt_current_bank_ac'] ?? 'IDFC FIRST Bank:10133938666' }},
-            Bank IFSC: {{ $settings['receipt_bank_ifsc'] ?? 'IDFB0081103' }}
+
+        <div class="amount-in-words">
+            <strong>Amount in Words: </strong> {{ $amountInWords }} Only
         </div>
 
         <div class="total-section">
@@ -287,6 +295,12 @@
                     <h3>Payment Received</h3>
                 </span>
             </div>
+        </div>
+
+        <div class="bank-details">
+            A/C Details: {{ $settings['receipt_ac_details'] ?? 'CONFEDERATION OF REAL ESTATE ASSOCIATES INDIA' }},
+            Current Bank A/C: {{ $settings['receipt_current_bank_ac'] ?? 'IDFC FIRST Bank:10133938666' }},
+            Bank IFSC: {{ $settings['receipt_bank_ifsc'] ?? 'IDFB0081103' }}
         </div>
 
         <div class="footer">

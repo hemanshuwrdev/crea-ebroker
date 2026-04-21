@@ -174,24 +174,24 @@
         <table class="info-table">
             <tr>
                 <td class="w-20">Name:</td>
-                <td>{{ $payment->customer->name }}</td>
+                <td>{{ $payment->customer->name ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="w-20">Email:</td>
-                <td>{{ $payment->customer->email }}</td>
+                <td>{{ $payment->customer->email ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="w-20">Mobile:</td>
-                <td>{{ $payment->customer->mobile }}</td>
+                <td>{{ $payment->customer->mobile ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="w-20">Address:</td>
-                <td class="text-red-addr">{{ $payment->customer->address }}</td>
+                <td class="text-red-addr">{{ !empty($payment->customer->address) ? $payment->customer->address : '-' }}</td>
             </tr>
             @if(!empty($payment->customer->gst_number))
                 <tr>
                     <td class="w-20">GST No.:</td>
-                    <td>{{ $payment->customer->gst_number }}</td>
+                    <td>{{ $payment->customer->gst_number ?? '-' }}</td>
                 </tr>
             @endif
             <tr>

@@ -46,11 +46,14 @@ class PaymentReceiptService
         // Get system settings
         $settings = $this->getSettings();
 
-        // Convert company logo to base64 for embedding in HTML
+        // Convert company logo to base64 for embedding in PDF
         $companyLogo = $settings['company_logo'];
-        $logoUrl = URL::to('assets/images/logo/'.$companyLogo);
-        $settings['logo'] = $logoUrl;
-
+        $logoPath = public_path('assets/images/logo/'.$companyLogo);
+        $settings['logo'] = '';
+        if (file_exists($logoPath)) {
+            $imageData = file_get_contents($logoPath);
+            $settings['logo'] = 'data:image/png;base64,' . base64_encode($imageData);
+        }
         // Generate HTML directly by rendering the view
         $html = view('payments.receipts.payment_receipt', [
             'payment' => $payment,

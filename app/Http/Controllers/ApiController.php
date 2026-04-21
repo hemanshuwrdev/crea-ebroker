@@ -6406,8 +6406,9 @@ class ApiController extends Controller
             $loggedInUserId = Auth::user()->id;
             $payment = PaymentTransaction::with(
                 'package:id,name,duration,package_type',
-                'customer:id,name,email,mobile'
+                'customer:id,name,email,mobile,gst_number'
             )->without('customer.tokens')->findOrFail($request->payment_transaction_id);
+            $payment->invoice_no = str_pad($payment->id, 3, '0', STR_PAD_LEFT);
             if($payment->user_id != $loggedInUserId){
                 ApiResponseService::validationError("You are not authorized to view this receipt");
             }
@@ -6417,7 +6418,7 @@ class ApiController extends Controller
                 ApiResponseService::validationError("Receipt is only available for successful payments");
             }
             $receiptService = new PaymentReceiptService();
-            return $receiptService->generateHTML($payment);
+            return $receiptService->streamPDF($payment);
         }catch(Exception $e){
             ApiResponseService::errorResponse();
         }

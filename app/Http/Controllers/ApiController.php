@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use DateTime;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 use Carbon\Carbon;
 use App\Models\Faq;
@@ -3073,7 +3074,7 @@ class ApiController extends Controller
                 ]);
 
                 // Create Payment Transaction
-                PaymentTransaction::create([
+                $paymentTransactionData = PaymentTransaction::create([
                     'user_id' => $loggedInUserId,
                     'package_id' => $package->id,
                     'amount' => 0,
@@ -3103,6 +3104,8 @@ class ApiController extends Controller
                         UserPackageLimit::insert($userPackageLimitData);
                     }
                 }
+                HelperService::sendReceiptsOnSpecificMail($paymentTransactionData);
+
                 DB::commit();
                 ApiResponseService::successResponse("Package Purchased Successfully");
             } else {

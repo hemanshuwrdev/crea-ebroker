@@ -770,6 +770,12 @@
                                     <input type="text" class="form-control" name="receipt_bank_ifsc" id="receipt_bank_ifsc" value="{{ isset($systemSettings['receipt_bank_ifsc']) && $systemSettings['receipt_bank_ifsc'] != '' ? $systemSettings['receipt_bank_ifsc'] : '' }}" placeholder="{{ __('Bank IFSC') }}">
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="receipt_emails" class="form-label">{{ __('Payment Receipt Emails (comma separated)') }}</label>
+                                    <input type="text" class="form-control" name="receipt_emails" id="receipt_emails" value="{{ isset($systemSettings['receipt_emails']) && $systemSettings['receipt_emails'] != '' ? $systemSettings['receipt_emails'] : '' }}" placeholder="{{ __('Example: admin@test.com,sales@test.com') }}">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -869,12 +875,12 @@
             setTimeout(() => {
                 bankDetailsRepeater.setList([
                     @foreach($bankDetailsFields as $key => $bankDetail)
-                                                                                        {
+                                                                                                                                        {
                             title: "{{$bankDetail['title']}}",
                             value: "{{$bankDetail['value']}}",
                         },
                     @endforeach
-                                                ]);
+                                                                        ]);
             }, 100);
         });
 

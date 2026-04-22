@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PDF\PaymentReceiptService;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 use Carbon\Carbon;
 use Stripe\Webhook;
@@ -393,6 +395,9 @@ class WebhookController extends Controller
                     'customers_id' => $userId,
                 ]);
             }
+
+            HelperService::sendReceiptsOnSpecificMail($paymentTransactionData);
+
             DB::commit();
             ResponseService::successResponse("Transaction Verified Successfully");
 

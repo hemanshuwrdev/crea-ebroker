@@ -136,7 +136,7 @@ class SettingController extends Controller
             'favicon_icon','company_logo','login_image',
             'bank_transfer_status',
             'gst_no','cgst_tax_code','cgst_percentage','sgst_tax_code','sgst_percentage',
-            'receipt_place','receipt_ac_details','receipt_current_bank_ac','receipt_bank_name','receipt_bank_ifsc'
+            'receipt_place','receipt_ac_details','receipt_current_bank_ac','receipt_bank_name','receipt_bank_ifsc','receipt_emails'
         );
         $systemSettings = HelperService::getMultipleSettingData($settingsArray);
 

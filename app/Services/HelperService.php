@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Services\PDF\PaymentReceiptService;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Feature;
@@ -664,6 +665,37 @@ class HelperService {
         );
         return $featureNames;
     }
+
+    public static function sendReceiptsOnSpecificMail($paymentTransactionData){
+        try {
+            $receiptEmails = system_setting('receipt_emails');
+            if (!empty($receiptEmails)) {
+                $emails = explode(',', $receiptEmails);
+                $emails = array_filter(array_map('trim', $emails));
+                
+                if (!empty($emails)) {
+                    $receiptService = new PaymentReceiptService();
+                    $paymentTransactionData->invoice_no = str_pad($paymentTransactionData->id, 3, '0', STR_PAD_LEFT);
+                    $pdf = $receiptService->generatePDF($paymentTransactionData);
+                    $pdfContent = $pdf->output();
+
+                    Mail::raw('Please find attached the payment receipt for transaction ID: ' . $paymentTransactionData->id, function ($message) use ($emails, $pdfContent, $paymentTransactionData) {
+                        $message->to($emails)
+                                ->subject('Payment Receipt - ' . $paymentTransactionData->id)
+                                ->attachData($pdfContent, 'receipt_' . $paymentTransactionData->id . '.pdf', [
+                                    'mime' => 'application/pdf',
+                                ]);
+                    });
+
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception $e) {
+            ApiResponseService::logErrorResponse($e, 'Issue in sendReceiptsOnSpecificMail helper function');
+            return false;
+        }
+    }        
 
 }
 

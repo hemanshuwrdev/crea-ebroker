@@ -6409,7 +6409,7 @@ class ApiController extends Controller
             $loggedInUserId = Auth::user()->id;
             $payment = PaymentTransaction::with(
                 'package:id,name,duration,package_type',
-                'customer:id,name,email,mobile,gst_number'
+                'customer:id,name,email,mobile,gst_number,address'
             )->without('customer.tokens')->findOrFail($request->payment_transaction_id);
             $payment->invoice_no = str_pad($payment->id, 3, '0', STR_PAD_LEFT);
             if($payment->user_id != $loggedInUserId){

@@ -321,7 +321,7 @@ class WebhookController extends Controller
                 ResponseService::errorResponse("Payment Transaction id not found");
             }
 
-            if ($paymentTransactionData->payment_status == "succeed") {
+            if ($paymentTransactionData->payment_status == "success") {
                 Log::info("Transaction Already Succeed");
                 ResponseService::errorResponse("Transaction Already Succeed");
             }

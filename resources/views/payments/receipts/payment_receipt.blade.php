@@ -151,6 +151,16 @@
         }
     </style>
 </head>
+@php
+    $sgst_tax = $payment->amount * ($settings['sgst_percentage'] / 100);
+    $cgst_tax = $payment->amount * ($settings['cgst_percentage'] / 100);
+    $amountBeforeTax = $payment->amount - ($sgst_tax + $cgst_tax);
+    $totalFinalAmount = $payment->amount;
+
+    // Amount in words logic (requires NumberFormatter or standard PHP)
+    $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+    $amountInWords = ucwords($f->format($totalFinalAmount));
+@endphp
 
 <body>
     <div class="container">
@@ -227,15 +237,15 @@
                         {!! nl2br(e($payment->package->description)) !!}
                     </td>
                     <td class="text-center">1</td>
-                    <td class="text-right">{{ number_format($payment->amount, 2) }}</td>
-                    <td class="text-right">{{ number_format($payment->amount, 2) }}</td>
+                    <td class="text-right">{{ number_format($amountBeforeTax, 2) }}</td>
+                    <td class="text-right">{{ number_format($amountBeforeTax, 2) }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td class="bold text-right">Total Net</td>
-                    <td class="bold text-right">{{ number_format($payment->amount, 2) }}</td>
+                    <td class="bold text-right">{{ number_format($amountBeforeTax, 2) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -252,15 +262,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $sgst_tax = $payment->amount * ($settings['sgst_percentage'] / 100);
-                        $cgst_tax = $payment->amount * ($settings['cgst_percentage'] / 100);
-                        $totalFinalAmount = $payment->amount + $sgst_tax + $cgst_tax;
-
-                        // Amount in words logic (requires NumberFormatter or standard PHP)
-                        $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-                        $amountInWords = ucwords($f->format($totalFinalAmount));
-                    @endphp
                     <tr>
                         <td class="text-center">{{ $settings['sgst_tax_code'] }}</td>
                         <td class="text-right">0</td>

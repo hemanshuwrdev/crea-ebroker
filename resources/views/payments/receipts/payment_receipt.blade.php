@@ -41,6 +41,11 @@
             margin-bottom: 15px;
         }
 
+        .company-address-line {
+            border-bottom: 2px solid #ddd;
+            border-top: 2px solid #ddd;
+        }
+
         .meta-info-table {
             width: 100%;
             margin-bottom: 5px;
@@ -171,6 +176,14 @@
         </div>
 
         <div class="title-row">Tax Invoice</div>
+        <div class="company-address-line">
+            <p class="text-center">{{ $settings['company_name'] ?? 'Company Name' }} | {{ $settings['company_address'] ?? 'Company Address' }}</p>
+            @php
+                // if company_tel1 is not null, then use it, otherwise use company_tel2
+                $settings['company_tel'] = $settings['company_tel1'] ?? $settings['company_tel2'] ?? 'xxxxxxxxxxxxxxx';
+            @endphp
+            <p class="text-center">{{ $settings['company_email'] ?? 'support@example.com' }} | {{ $settings['company_tel'] }}</p>
+        </div>
 
         <table class="meta-info-table">
             <tr>
@@ -307,12 +320,6 @@
 
         <div class="footer">
             <p>Thank you for your purchase!</p>
-            <p>{{ $settings['company_name'] ?? 'Company Name' }} | {{ $settings['company_address'] ?? 'Company Address' }}</p>
-            @php
-                // if company_tel1 is not null, then use it, otherwise use company_tel2
-                $settings['company_tel'] = $settings['company_tel1'] ?? $settings['company_tel2'] ?? 'xxxxxxxxxxxxxxx';
-            @endphp
-            <p>{{ $settings['company_email'] ?? 'support@example.com' }} | {{ $settings['company_tel'] }}</p>
             <p>Receipt generated on {{ now()->format('d M Y, h:i A') }}</p>
         </div>
     </div>

@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasAppTimezone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\HasAppTimezone;
+
 class PaymentTransaction extends Model
 {
-    use HasFactory, HasAppTimezone;
+    use HasAppTimezone, HasFactory;
+
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $fillable = array(
+
+    protected $fillable = [
         'user_id',
         'package_id',
         'amount',
@@ -18,14 +21,25 @@ class PaymentTransaction extends Model
         'order_id',
         'payment_status',
         'transaction_id',
-    );
+        'invoice_no',
+    ];
+
+    public static function generateInvoiceNo()
+    {
+        $lastInvoice = static::whereNotNull('invoice_no')
+            ->orderByRaw('CAST(invoice_no AS UNSIGNED) DESC')
+            ->value('invoice_no');
+        $next = $lastInvoice ? ((int) $lastInvoice) + 1 : 1;
+
+        return str_pad($next, 3, '0', STR_PAD_LEFT);
+    }
 
     public static function boot()
     {
         parent::boot();
         static::deleting(function ($model) {
             $bankReceiptFiles = $model->bank_receipt_files()->get();
-            foreach($bankReceiptFiles as $bankReceiptFile){
+            foreach ($bankReceiptFiles as $bankReceiptFile) {
                 $bankReceiptFile->delete();
             }
         });

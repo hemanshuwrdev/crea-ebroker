@@ -29,7 +29,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" data-field="id" data-sortable="true"> {{ __('ID') }}</th>
-                                    <th scope="col" data-field="invoice_no" data-align="center"> {{ __('Invoice No') }}</th>
+                                    <th scope="col" data-field="invoice_no" data-sortable="true" data-align="center"> {{ __('Invoice No') }}</th>
                                     <th scope="col" data-field="customer.name" data-align="center" data-sortable="false"> {{ __('Client Name') }}</th>
                                     <th scope="col" data-field="package.name" data-align="center" data-sortable="false"> {{ __('Package Name') }} </th>
                                     <th scope="col" data-field="amount" data-align="center" data-sortable="true" data-formatter="paymentAmountFormatter"> {{ __('Amount') }} </th>
@@ -96,30 +96,30 @@
 
                             $('.documents-div').append(
                                 `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3 mt-2 bg-light rounded m-2 p-2">
-                                                <div class="docs_main_div">
-                                                    <div class="doc_icon">
-                                                        ${documentSvgImage}
+                                                    <div class="docs_main_div">
+                                                        <div class="doc_icon">
+                                                            ${documentSvgImage}
+                                                        </div>
+                                                        <div class="doc_title">
+                                                            <span title="${filename}">${filename}</span>
+                                                        </div>
+                                                        <div class="doc_download_button">
+                                                            <a href="${url}" target="_blank">
+                                                                <span>
+                                                                    ${downloadImg}
+                                                                </span>
+                                                                <span>${downloadText}</span>
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                    <div class="doc_title">
-                                                        <span title="${filename}">${filename}</span>
-                                                    </div>
-                                                    <div class="doc_download_button">
-                                                        <a href="${url}" target="_blank">
-                                                            <span>
-                                                                ${downloadImg}
-                                                            </span>
-                                                            <span>${downloadText}</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>`
+                                                </div>`
                             );
                         });
                     } else {
                         $('.documents-div').append(
                             `<span class="no-data-found-span">
-                                            ${window.trans["No Data Found"]}
-                                        </span>`
+                                                ${window.trans["No Data Found"]}
+                                            </span>`
                         );
                     }
                 }

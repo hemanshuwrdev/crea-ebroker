@@ -2,31 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PDF\PaymentReceiptService;
-use Illuminate\Support\Facades\Mail;
-use Throwable;
-use Carbon\Carbon;
-use Stripe\Webhook;
-use Razorpay\Api\Api;
-use App\Models\Package;
-use App\Models\Customer;
-use App\Models\Payments;
 use App\Libraries\Paypal;
-use App\Models\Usertokens;
-use App\Models\UserPackage;
-use Illuminate\Http\Request;
 use App\Models\Notifications;
+use App\Models\Package;
 use App\Models\PackageFeature;
-use App\Services\HelperService;
-use App\Models\UserPackageLimit;
-use App\Services\ResponseService;
 use App\Models\PaymentTransaction;
+use App\Models\UserPackage;
+use App\Models\UserPackageLimit;
+use App\Models\Usertokens;
+use App\Services\HelperService;
+use App\Services\ResponseService;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Services\NotificationService;
-use Exception;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
-
+use Razorpay\Api\Api;
+use Stripe\Webhook;
+use Throwable;
 
 class WebhookController extends Controller
 {
@@ -34,20 +28,20 @@ class WebhookController extends Controller
     {
         try {
             // only a post with paystack signature header gets our attention
-            if (!array_key_exists('HTTP_X_PAYSTACK_SIGNATURE', $_SERVER) || (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')) {
-                echo "Signature not found";
+            if (! array_key_exists('HTTP_X_PAYSTACK_SIGNATURE', $_SERVER) || (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')) {
+                echo 'Signature not found';
                 http_response_code(400);
                 exit(0);
             }
-            $inputJSON = @file_get_contents("php://input");
+            $inputJSON = @file_get_contents('php://input');
             $input = json_decode($inputJSON, true, 512, JSON_THROW_ON_ERROR);
 
             // Calculate HMAC
             $paystackSecretKey = HelperService::getSettingData('paystack_secret_key');
             $headerSignature = $_SERVER['HTTP_X_PAYSTACK_SIGNATURE'];
             $calculatedHMAC = hash_hmac('sha512', $inputJSON, $paystackSecretKey);
-            if (!hash_equals($headerSignature, $calculatedHMAC)) {
-                echo "Signature does not match";
+            if (! hash_equals($headerSignature, $calculatedHMAC)) {
+                echo 'Signature does not match';
                 http_response_code(400);
                 exit(0);
             }
@@ -57,26 +51,27 @@ class WebhookController extends Controller
             $paymentTransactionId = $input['data']['metadata']['payment_transaction_id'];
             switch ($input['event']) {
                 case 'charge.success':
-                    $response = $this->assignPackage($paymentTransactionId,$transactionId);
+                    $response = $this->assignPackage($paymentTransactionId, $transactionId);
                     if ($response['error']) {
-                        Log::error("Paystack Webhook : ", [$response['message']]);
+                        Log::error('Paystack Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
                     break;
                 case 'charge.failed':
                     $response = $this->failedTransaction($paymentTransactionId);
                     if ($response['error']) {
-                        Log::error("Paystack Webhook : ", [$response['message']]);
+                        Log::error('Paystack Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
                     break;
             }
-        }catch (Throwable $e) {
-            Log::error("Paystack Webhook : Error occurred", [$e->getMessage() . ' --> ' . $e->getFile() . ' At Line : ' . $e->getLine()]);
+        } catch (Throwable $e) {
+            Log::error('Paystack Webhook : Error occurred', [$e->getMessage().' --> '.$e->getFile().' At Line : '.$e->getLine()]);
             http_response_code(400);
             exit();
         }
     }
+
     public function razorpay(Request $request)
     {
         try {
@@ -85,9 +80,8 @@ class WebhookController extends Controller
             $webhookBody = file_get_contents('php://input');
             $data = json_decode($webhookBody, false, 512, JSON_THROW_ON_ERROR);
 
-
             // Get Config Data From Settings
-            $razorPayConfigData = HelperService::getMultipleSettingData(array('razor_key','razor_secret','razor_webhook_secret'));
+            $razorPayConfigData = HelperService::getMultipleSettingData(['razor_key', 'razor_secret', 'razor_webhook_secret']);
             $razorPayApiKey = $razorPayConfigData['razor_key'];
             $razorPaySecretKey = $razorPayConfigData['razor_secret'];
             $webhookSecret = $razorPayConfigData['razor_webhook_secret'];
@@ -95,8 +89,8 @@ class WebhookController extends Controller
             // gets the signature from header
             $webhookSignature = $request->header('X-Razorpay-Signature');
 
-            //checks the signature
-            $expectedSignature = hash_hmac("SHA256", $webhookBody, $webhookSecret);
+            // checks the signature
+            $expectedSignature = hash_hmac('SHA256', $webhookBody, $webhookSecret);
 
             // Initiate Razorpay Class
             $api = new Api($razorPayApiKey, $razorPaySecretKey);
@@ -109,9 +103,9 @@ class WebhookController extends Controller
                         $entityData = $data->payload->payment->entity;
                         $transactionId = $entityData->id;
                         $paymentTransactionId = $entityData->notes->payment_transaction_id;
-                        $response = $this->assignPackage($paymentTransactionId,$transactionId);
+                        $response = $this->assignPackage($paymentTransactionId, $transactionId);
                         if ($response['error']) {
-                            Log::error("Razorpay Webhook : ", [$response['message']]);
+                            Log::error('Razorpay Webhook : ', [$response['message']]);
                         }
                         http_response_code(200);
                         break;
@@ -120,30 +114,31 @@ class WebhookController extends Controller
                         $paymentTransactionId = $entityData->notes->payment_transaction_id;
                         $response = $this->failedTransaction($paymentTransactionId);
                         if ($response['error']) {
-                            Log::error("Razorpay Webhook : ", [$response['message']]);
+                            Log::error('Razorpay Webhook : ', [$response['message']]);
                         }
                         http_response_code(200);
                         break;
                 }
 
-                Log::info("Payment Done Successfully");
+                Log::info('Payment Done Successfully');
             } else {
-                Log::error("Razorpay Signature Not Matched Payment Failed !!!!!!");
+                Log::error('Razorpay Signature Not Matched Payment Failed !!!!!!');
             }
         } catch (Exception $e) {
-            Log::error("Razorpay Webhook : Error occurred", [$e->getMessage() . ' --> ' . $e->getFile() . ' At Line : ' . $e->getLine()]);
+            Log::error('Razorpay Webhook : Error occurred', [$e->getMessage().' --> '.$e->getFile().' At Line : '.$e->getLine()]);
             http_response_code(400);
             exit();
         }
     }
+
     public function paypal(Request $request)
     {
         Log::info('Paypal Webhook Called');
         $input = file_get_contents('php://input');
 
-        $paypal = new Paypal();
+        $paypal = new Paypal;
         // Check if $input is not empty
-        if (!empty($input)) {
+        if (! empty($input)) {
             parse_str($input, $arr);
             $ipnCheck = $paypal->validate_ipn($arr);
             if ($ipnCheck) {
@@ -156,9 +151,9 @@ class WebhookController extends Controller
                     $transactionId = $arr['txn_id'];
                     $custom_data = explode(',', $arr['custom']);
                     $paymentTransactionId = $custom_data[0];
-                    $response = $this->assignPackage($paymentTransactionId,$transactionId);
+                    $response = $this->assignPackage($paymentTransactionId, $transactionId);
                     if ($response['error']) {
-                        Log::error("Paypal Webhook : ", [$response['message']]);
+                        Log::error('Paypal Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
                     break;
@@ -170,7 +165,7 @@ class WebhookController extends Controller
                     $paymentTransactionId = $custom_data[0];
                     $response = $this->failedTransaction($paymentTransactionId);
                     if ($response['error']) {
-                        Log::error("Paypal Webhook : ", [$response['message']]);
+                        Log::error('Paypal Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
                     break;
@@ -179,6 +174,7 @@ class WebhookController extends Controller
             Log::debug('input is empty');
         }
     }
+
     public function stripe(Request $request)
     {
         Log::info('Stripe Webhook Called');
@@ -196,17 +192,17 @@ class WebhookController extends Controller
             // Get Payment Transaction ID
             $paymentTransactionId = $event->data->object->metadata->payment_transaction_id;
             switch ($event->type) {
-                case "payment_intent.succeeded":
-                    $response = $this->assignPackage($paymentTransactionId,$transactionID);
+                case 'payment_intent.succeeded':
+                    $response = $this->assignPackage($paymentTransactionId, $transactionID);
                     if ($response['error']) {
-                        Log::error("Stripe Webhook : ", [$response['message']]);
+                        Log::error('Stripe Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
                     break;
                 case 'payment_intent.payment_failed':
                     $response = $this->failedTransaction($paymentTransactionId);
                     if ($response['error']) {
-                        Log::error("Stripe Webhook : ", [$response['message']]);
+                        Log::error('Stripe Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
                     break;
@@ -223,9 +219,11 @@ class WebhookController extends Controller
             return Log::error('Stripe Webhook failed');
         }
     }
-    public function flutterwave(Request $request){
+
+    public function flutterwave(Request $request)
+    {
         try {
-            //This verifies the webhook is sent from Flutterwave
+            // This verifies the webhook is sent from Flutterwave
             $verified = Flutterwave::verifyWebhook();
             $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
@@ -237,26 +235,27 @@ class WebhookController extends Controller
                     $transactionId = $data['id'];
                     $metaData = $data['meta'];
                     $paymentTransactionId = $metaData['payment_transaction_id'];
-                    $response = $this->assignPackage($paymentTransactionId,$transactionId);
+                    $response = $this->assignPackage($paymentTransactionId, $transactionId);
                     if ($response['error']) {
-                        Log::error("Flutterwave Webhook : ", [$response['message']]);
+                        Log::error('Flutterwave Webhook : ', [$response['message']]);
                     }
                     http_response_code(200);
+
                     return true;
-                }else{
+                } else {
                     $data = $verificationData['data'];
                     $paymentTransactionId = $data['meta']['payment_transaction_id'] ?? null;
                     if ($paymentTransactionId) {
                         $response = $this->failedTransaction($paymentTransactionId);
                         if ($response['error']) {
-                            Log::error("Flutterwave Webhook : ", [$response['message']]);
+                            Log::error('Flutterwave Webhook : ', [$response['message']]);
                         }
                     } else {
                         Log::error('Flutterwave Webhook: Missing payment_transaction_id in metadata');
                     }
                     Log::error('Flutterwave Webhook Status Not Succeeded');
                 }
-            }else{
+            } else {
                 Log::error('Flutterwave Webhook Verification Error');
 
                 // Try to find the transaction in our database by the transaction reference
@@ -284,7 +283,7 @@ class WebhookController extends Controller
                 if ($paymentTransactionId) {
                     $response = $this->failedTransaction($paymentTransactionId);
                     if ($response['error']) {
-                        Log::error("Flutterwave Webhook (Failed Verification): ", [$response['message']]);
+                        Log::error('Flutterwave Webhook (Failed Verification): ', [$response['message']]);
                     }
                     http_response_code(200);
                 } else {
@@ -292,98 +291,103 @@ class WebhookController extends Controller
                     http_response_code(400);
                 }
             }
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             // Other Error Exception
-            Log::error('Flutterwave Webhook failed: ' . $e->getMessage());
+            Log::error('Flutterwave Webhook failed: '.$e->getMessage());
             http_response_code(400);
+
             return;
         }
     }
 
-    public function paystackSuccessCallback(){
-        ResponseService::successResponse("Payment done successfully.");
+    public function paystackSuccessCallback()
+    {
+        ResponseService::successResponse('Payment done successfully.');
     }
 
-
-
-     /**
+    /**
      * Success Business Login
-     * @param $payment_transaction_id
-     * @param $user_id
-     * @param $package_id
+     *
+     * @param  $payment_transaction_id
+     * @param  $user_id
+     * @param  $package_id
      * @return array
      */
-    private function assignPackage($paymentTransactionId,$transactionId) {
+    private function assignPackage($paymentTransactionId, $transactionId)
+    {
         try {
             $paymentTransactionData = PaymentTransaction::where('id', $paymentTransactionId)->first();
             if ($paymentTransactionData == null) {
-                Log::error("Payment Transaction id not found");
-                ResponseService::errorResponse("Payment Transaction id not found");
+                Log::error('Payment Transaction id not found');
+                ResponseService::errorResponse('Payment Transaction id not found');
             }
 
-            if ($paymentTransactionData->payment_status == "success") {
-                Log::info("Transaction Already Succeed");
-                ResponseService::errorResponse("Transaction Already Succeed");
+            if ($paymentTransactionData->payment_status == 'success') {
+                Log::info('Transaction Already Succeed');
+                ResponseService::errorResponse('Transaction Already Succeed');
             }
 
             DB::beginTransaction();
-            $paymentTransactionData->update(['transaction_id' => $transactionId,'payment_status' => "success"]);
+            $paymentTransactionData->update([
+                'transaction_id' => $transactionId,
+                'payment_status' => 'success',
+                'invoice_no' => $paymentTransactionData->invoice_no ?: PaymentTransaction::generateInvoiceNo(),
+            ]);
 
             $packageId = $paymentTransactionData->package_id;
             $userId = $paymentTransactionData->user_id;
 
-
             $package = Package::findOrFail($packageId);
 
-            if (!empty($package)) {
+            if (! empty($package)) {
                 // Assign Package to user
                 $userPackage = UserPackage::create([
-                    'package_id'  => $packageId,
-                    'user_id'     => $userId,
-                    'start_date'  => Carbon::now(),
-                    'end_date'    => $package->package_type == "unlimited" ? null : Carbon::now()->addHours($package->duration),
+                    'package_id' => $packageId,
+                    'user_id' => $userId,
+                    'start_date' => Carbon::now(),
+                    'end_date' => $package->package_type == 'unlimited' ? null : Carbon::now()->addHours($package->duration),
                 ]);
                 DB::commit();
 
                 DB::beginTransaction();
                 // Assign limited count feature to user with limits
                 $packageFeatures = PackageFeature::where(['package_id' => $packageId, 'limit_type' => 'limited'])->get();
-                if(collect($packageFeatures)->isNotEmpty()){
-                    $userPackageLimitData = array();
+                if (collect($packageFeatures)->isNotEmpty()) {
+                    $userPackageLimitData = [];
                     foreach ($packageFeatures as $key => $feature) {
-                        $userPackageLimitData[] = array(
+                        $userPackageLimitData[] = [
                             'user_package_id' => $userPackage->id,
                             'package_feature_id' => $feature->id,
                             'total_limit' => $feature->limit,
                             'used_limit' => 0,
                             'created_at' => now(),
-                            'updated_at' => now()
-                        );
+                            'updated_at' => now(),
+                        ];
                     }
 
-                    if(!empty($userPackageLimitData)){
+                    if (! empty($userPackageLimitData)) {
                         UserPackageLimit::insert($userPackageLimitData);
                     }
                 }
             }
 
             $userFcmTokensDB = Usertokens::where('customer_id', $userId)->pluck('fcm_id');
-            if(collect($userFcmTokensDB)->isNotEmpty()){
-                $title = "Package Purchased";
-                $body = 'Amount :- ' . $paymentTransactionData->amount;
+            if (collect($userFcmTokensDB)->isNotEmpty()) {
+                $title = 'Package Purchased';
+                $body = 'Amount :- '.$paymentTransactionData->amount;
 
                 $registrationIDs = array_filter($userFcmTokensDB->toArray());
 
-                $fcmMsg = array(
+                $fcmMsg = [
                     'title' => $title,
                     'message' => $body,
-                    "image" => null,
+                    'image' => null,
                     'type' => 'default',
                     'body' => $body,
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     'sound' => 'default',
 
-                );
+                ];
                 send_push_notification($registrationIDs, $fcmMsg);
 
                 Notifications::create([
@@ -399,55 +403,57 @@ class WebhookController extends Controller
             HelperService::sendReceiptsOnSpecificMail($paymentTransactionData);
 
             DB::commit();
-            ResponseService::successResponse("Transaction Verified Successfully");
+            ResponseService::successResponse('Transaction Verified Successfully');
 
         } catch (Throwable $th) {
             DB::rollBack();
-            Log::error($th->getMessage() . "WebhookController -> assignPackage");
+            Log::error($th->getMessage().'WebhookController -> assignPackage');
             ResponseService::errorResponse();
         }
     }
 
-
     /**
      * Failed Business Logic
-     * @param $paymentTransactionId
+     *
      * @return array
      */
-    private function failedTransaction($paymentTransactionId) {
+    private function failedTransaction($paymentTransactionId)
+    {
         try {
             $paymentTransactionData = PaymentTransaction::find($paymentTransactionId);
-            if (!$paymentTransactionData) {
-                Log::error("Payment Transaction id not found");
-                return ResponseService::errorResponse("Payment Transaction id not found");
+            if (! $paymentTransactionData) {
+                Log::error('Payment Transaction id not found');
+
+                return ResponseService::errorResponse('Payment Transaction id not found');
             }
 
-            if ($paymentTransactionData->payment_status == "failed") {
-                Log::info("Transaction Already Failed");
-                return ResponseService::errorResponse("Transaction Already Failed");
+            if ($paymentTransactionData->payment_status == 'failed') {
+                Log::info('Transaction Already Failed');
+
+                return ResponseService::errorResponse('Transaction Already Failed');
             }
 
             DB::beginTransaction();
-            $paymentTransactionData->update(['payment_status' => "failed"]);
+            $paymentTransactionData->update(['payment_status' => 'failed']);
 
             $userId = $paymentTransactionData->user_id;
-            $title = "Package Payment Failed";
-            $body = 'Amount :- ' . $paymentTransactionData->amount;
+            $title = 'Package Payment Failed';
+            $body = 'Amount :- '.$paymentTransactionData->amount;
 
             $userFcmTokensDB = Usertokens::where('customer_id', $userId)->pluck('fcm_id');
-            if(collect($userFcmTokensDB)->isNotEmpty()){
+            if (collect($userFcmTokensDB)->isNotEmpty()) {
                 $registrationIDs = array_filter($userFcmTokensDB->toArray());
 
-                $fcmMsg = array(
+                $fcmMsg = [
                     'title' => $title,
                     'message' => $body,
-                    "image" => null,
+                    'image' => null,
                     'type' => 'default',
                     'body' => $body,
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     'sound' => 'default',
 
-                );
+                ];
                 send_push_notification($registrationIDs, $fcmMsg);
             }
             Notifications::create([
@@ -460,10 +466,10 @@ class WebhookController extends Controller
             ]);
 
             DB::commit();
-            ResponseService::successResponse("Transaction Failed Successfully");
+            ResponseService::successResponse('Transaction Failed Successfully');
         } catch (Throwable $th) {
             DB::rollBack();
-            Log::error($th->getMessage() . "WebhookController -> failedTransaction");
+            Log::error($th->getMessage().'WebhookController -> failedTransaction');
             ResponseService::errorResponse();
         }
     }

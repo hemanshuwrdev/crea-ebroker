@@ -172,9 +172,14 @@
     </style>
 </head>
 @php
-    $sgst_tax = $payment->amount * ($settings['sgst_percentage'] / 100);
-    $cgst_tax = $payment->amount * ($settings['cgst_percentage'] / 100);
-    $amountBeforeTax = $payment->amount - ($sgst_tax + $cgst_tax);
+    // $sgst_tax = $payment->amount * ($settings['sgst_percentage'] / 100);
+    // $cgst_tax = $payment->amount * ($settings['cgst_percentage'] / 100);
+    $totalTaxPercentage = $settings['cgst_percentage'] + $settings['sgst_percentage'];
+    $baseAmount = $payment->amount * 100 / (100 + $totalTaxPercentage);
+    $taxAmount = ($payment->amount - $baseAmount) / 2;
+    $cgst_tax = round($taxAmount, 2);
+    $sgst_tax = round($taxAmount, 2);
+    $amountBeforeTax = round($baseAmount, 2);
     $totalFinalAmount = $payment->amount;
 
     // Amount in words logic (requires NumberFormatter or standard PHP)

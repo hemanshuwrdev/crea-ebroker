@@ -1,39 +1,38 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FaqController;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SliderController;
+use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CityImagesController;
+use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HomepageSectionController;
+use App\Http\Controllers\InstallerController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OutdoorFacilityController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PackageFeatureController;
+use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropertController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\WebhookController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\CustomersController;
-use App\Http\Controllers\InstallerController;
-use App\Http\Controllers\ParameterController;
-use App\Http\Controllers\CityImagesController;
-use App\Http\Controllers\SeoSettingsController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ReportReasonController;
-use Illuminate\Auth\Notifications\ResetPassword;
-use App\Http\Controllers\AdvertisementController;
-use App\Http\Controllers\PackageFeatureController;
-use App\Http\Controllers\HomepageSectionController;
-use App\Http\Controllers\OutdoorFacilityController;
 use App\Http\Controllers\PropertysInquiryController;
+use App\Http\Controllers\ReportReasonController;
+use App\Http\Controllers\SeoSettingsController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyCustomerFormController;
+use App\Http\Controllers\WebhookController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,13 +45,9 @@ use App\Http\Controllers\VerifyCustomerFormController;
 |
 */
 
-
-
 Route::get('customer-privacy-policy', [SettingController::class, 'show_privacy_policy'])->name('customer-privacy-policy');
 
-
 Route::get('customer-terms-conditions', [SettingController::class, 'show_terms_conditions'])->name('customer-terms-conditions');
-
 
 Auth::routes();
 
@@ -71,8 +66,6 @@ Route::group(['prefix' => 'install'], static function () {
     Route::get('purchase-code', [InstallerController::class, 'purchaseCodeIndex'])->name('install.purchase-code.index');
     Route::post('purchase-code', [InstallerController::class, 'checkPurchaseCode'])->name('install.purchase-code.post');
 });
-
-
 
 Route::middleware(['language'])->group(function () {
     Route::get('/', function () {
@@ -112,10 +105,9 @@ Route::middleware(['language'])->group(function () {
         // Verify
         Route::post('verify-email-config', [SettingController::class, 'verifyEmailConfig'])->name('verify-email-config');
         /** End Email Settings */
-
         Route::post('system-version-setting', [SettingController::class, 'system_version_setting']);
 
-        /// START :: HOME ROUTE
+        // / START :: HOME ROUTE
         Route::get('change-password', [App\Http\Controllers\HomeController::class, 'change_password'])->name('changepassword');
         Route::post('check-password', [App\Http\Controllers\HomeController::class, 'check_password'])->name('checkpassword');
         Route::post('store-password', [App\Http\Controllers\HomeController::class, 'store_password'])->name('changepassword.store');
@@ -123,16 +115,15 @@ Route::middleware(['language'])->group(function () {
         Route::post('updateprofile', [HomeController::class, 'update_profile'])->name('updateprofile');
         Route::post('firebase_messaging_settings', [HomeController::class, 'firebase_messaging_settings'])->name('firebase_messaging_settings');
 
-        /// END :: HOME ROUTE
+        // / END :: HOME ROUTE
 
-        /// START :: SETTINGS ROUTE
+        // / START :: SETTINGS ROUTE
 
         Route::post('settings', [SettingController::class, 'settings']);
         Route::post('store-settings', [SettingController::class, 'system_settings'])->name('store-settings');
-        /// END :: SETTINGS ROUTE
+        // / END :: SETTINGS ROUTE
 
-        /// START :: LANGUAGES ROUTE
-
+        // / START :: LANGUAGES ROUTE
 
         Route::resource('language', LanguageController::class);
         Route::get('language_list', [LanguageController::class, 'show']);
@@ -143,17 +134,17 @@ Route::middleware(['language'])->group(function () {
         Route::get('download-app-file', [LanguageController::class, 'downloadAppFile'])->name('download-app-file');
         Route::get('download-web-file', [LanguageController::class, 'downloadWebFile'])->name('download-web-file');
 
-        /// END :: LANGUAGES ROUTE
+        // / END :: LANGUAGES ROUTE
 
-        /// START :: PAYMENT ROUTE
+        // / START :: PAYMENT ROUTE
 
         Route::get('payment-list', [PaymentController::class, 'paymentList'])->name('payment.list');
         Route::get('payment', [PaymentController::class, 'index'])->name('payment.index');
         Route::post('payment-status', [PaymentController::class, 'updateStatus'])->name('payment.status');
         Route::get('payment-receipt/{id}/view', [PaymentController::class, 'viewReceipt'])->name('payment.receipt.view');
-        /// END :: PAYMENT ROUTE
+        // / END :: PAYMENT ROUTE
 
-        /// START :: USER ROUTE
+        // / START :: USER ROUTE
 
         Route::resource('users', UserController::class);
         Route::post('users-update', [UserController::class, 'update']);
@@ -165,82 +156,75 @@ Route::middleware(['language'])->group(function () {
         }]);
         Route::get('destroy_contact_request/{id}', [UserController::class, 'destroy_contact_request'])->name('destroy_contact_request');
 
+        // / END :: PAYMENT ROUTE
 
-
-
-        /// END :: PAYMENT ROUTE
-
-        /// START :: PAYMENT ROUTE
+        // / START :: PAYMENT ROUTE
 
         Route::resource('customer', CustomersController::class);
         Route::get('customerList', [CustomersController::class, 'customerList']);
         Route::post('customerstatus', [CustomersController::class, 'update'])->name('customer.customerstatus');
-        /// END :: CUSTOMER ROUTE
+        // / END :: CUSTOMER ROUTE
 
-        /// START :: SLIDER ROUTE
+        // / START :: SLIDER ROUTE
 
         Route::resource('slider', SliderController::class);
         // Route::post('slider-order', [SliderController::class, 'update'])->name('slider.slider-order');
         Route::get('slider-destroy/{id}', [SliderController::class, 'destroy'])->name('slider.destroy');
         Route::get('sliderList', [SliderController::class, 'sliderList']);
-        /// END :: SLIDER ROUTE
+        // / END :: SLIDER ROUTE
 
-        /// START :: ARTICLE ROUTE
+        // / START :: ARTICLE ROUTE
 
         Route::resource('article', ArticleController::class);
         Route::get('article_list', [ArticleController::class, 'show'])->name('article_list');
         Route::get('add_article', [ArticleController::class, 'create'])->name('add_article');
         Route::delete('article-destroy/{id}', [ArticleController::class, 'destroy'])->name('article.destroy');
         Route::post('article/generate-slug', [ArticleController::class, 'generateAndCheckSlug'])->name('article.generate-slug');
-        /// END :: ARTICLE ROUTE
+        // / END :: ARTICLE ROUTE
 
-        /// START :: ADVERTISEMENT ROUTE
+        // / START :: ADVERTISEMENT ROUTE
 
         Route::resource('featured_properties', AdvertisementController::class);
         Route::get('featured_properties_list', [AdvertisementController::class, 'show']);
         Route::post('featured_properties_status', [AdvertisementController::class, 'updateStatus'])->name('featured_properties.update-advertisement-status');
         Route::post('adv-status-update', [AdvertisementController::class, 'update'])->name('adv-status-update');
-        /// END :: ADVERTISEMENT ROUTE
+        // / END :: ADVERTISEMENT ROUTE
 
-        /// START :: PACKAGE ROUTE
+        // / START :: PACKAGE ROUTE
 
         Route::post('package-features/status-update', [PackageFeatureController::class, 'updateStatus'])->name('package-features.status-update');
-        Route::resource('package-features',PackageFeatureController::class);
+        Route::resource('package-features', PackageFeatureController::class);
 
         Route::post('package-status', [PackageController::class, 'updatestatus'])->name('package.updatestatus');
-        Route::get('user-packages', [PackageController::class,'userPackageIndex'])->name('user-packages.index');
+        Route::get('user-packages', [PackageController::class, 'userPackageIndex'])->name('user-packages.index');
         Route::get('user-package-list', [PackageController::class, 'getUserPackageList'])->name('user-packages.list');
         Route::resource('package', PackageController::class);
 
+        // / END :: PACKAGE ROUTE
 
-        /// END :: PACKAGE ROUTE
-
-
-        /// START :: CATEGORY ROUTE
+        // / START :: CATEGORY ROUTE
         Route::resource('categories', CategoryController::class);
         Route::get('categoriesList', [CategoryController::class, 'categoryList']);
         Route::post('categories-update', [CategoryController::class, 'update']);
         Route::post('categorystatus', [CategoryController::class, 'updateCategory'])->name('categorystatus');
         Route::post('category/generate-slug', [CategoryController::class, 'generateAndCheckSlug'])->name('category.generate-slug');
-        /// END :: CATEGORYW ROUTE
+        // / END :: CATEGORYW ROUTE
 
-
-        /// START :: PARAMETER FACILITY ROUTE
+        // / START :: PARAMETER FACILITY ROUTE
 
         Route::resource('parameters', ParameterController::class);
         Route::get('parameter-list', [ParameterController::class, 'show']);
         Route::post('parameter-update', [ParameterController::class, 'update']);
-        /// END :: PARAMETER FACILITY ROUTE
+        // / END :: PARAMETER FACILITY ROUTE
 
-        /// START :: OUTDOOR FACILITY ROUTE
+        // / START :: OUTDOOR FACILITY ROUTE
         Route::resource('outdoor_facilities', OutdoorFacilityController::class);
         Route::get('facility-list', [OutdoorFacilityController::class, 'show']);
         Route::post('facility-update', [OutdoorFacilityController::class, 'update']);
         Route::get('facility-delete/{id}', [OutdoorFacilityController::class, 'destroy'])->name('outdoor_facilities.destroy');
-        /// END :: OUTDOOR FACILITY ROUTE
+        // / END :: OUTDOOR FACILITY ROUTE
 
-
-        /// START :: PROPERTY ROUTE
+        // / START :: PROPERTY ROUTE
 
         Route::prefix('property')->group(function () {
             Route::post('generate-slug', [PropertController::class, 'generateAndCheckSlug'])->name('property.generate-slug');
@@ -259,45 +243,42 @@ Route::middleware(['language'])->group(function () {
         Route::post('update-property-request-status', [PropertController::class, 'updateRequestStatus'])->name('update-property-request-status');
 
         Route::get('updateFCMID', [UserController::class, 'updateFCMID']);
-        /// END :: PROPERTY ROUTE
+        // / END :: PROPERTY ROUTE
 
-
-        /// START :: PROPERTY INQUIRY
+        // / START :: PROPERTY INQUIRY
         Route::resource('property-inquiry', PropertysInquiryController::class);
         Route::get('getPropertyInquiryList', [PropertysInquiryController::class, 'getPropertyInquiryList']);
         Route::post('property-inquiry-status', [PropertysInquiryController::class, 'updateStatus'])->name('property-inquiry.updateStatus');
-        /// ENND :: PROPERTY INQUIRY
+        // / ENND :: PROPERTY INQUIRY
 
-        /// START :: REPORTREASON
+        // / START :: REPORTREASON
         Route::resource('report-reasons', ReportReasonController::class);
         Route::get('report-reasons-list', [ReportReasonController::class, 'show']);
         Route::post('report-reasons-update', [ReportReasonController::class, 'update']);
         Route::get('report-reasons-destroy/{id}', [ReportReasonController::class, 'destroy'])->name('reasons.destroy');
         Route::get('users_reports', [ReportReasonController::class, 'users_reports']);
         Route::get('user_reports_list', [ReportReasonController::class, 'user_reports_list']);
-        /// END :: REPORTREASON
+        // / END :: REPORTREASON
 
         Route::resource('property-inquiry', PropertysInquiryController::class);
 
-
-        /// START :: CHAT ROUTE
+        // / START :: CHAT ROUTE
 
         Route::get('get-chat-list', [ChatController::class, 'getChats'])->name('get-chat-list');
         Route::post('store_chat', [ChatController::class, 'store']);
         Route::get('getAllMessage', [ChatController::class, 'getAllMessage']);
-        Route::post('block-user/{c_id}', [ChatController::class,'blockUser'])->name('block-user');
-        Route::post('unblock-user/{c_id}', [ChatController::class,'unBlockUser'])->name('unblock-user');
-        /// END :: CHAT ROUTE
+        Route::post('block-user/{c_id}', [ChatController::class, 'blockUser'])->name('block-user');
+        Route::post('unblock-user/{c_id}', [ChatController::class, 'unBlockUser'])->name('unblock-user');
+        // / END :: CHAT ROUTE
 
-
-        /// START :: NOTIFICATION
+        // / START :: NOTIFICATION
         Route::resource('notification', NotificationController::class);
         Route::get('notificationList', [NotificationController::class, 'notificationList']);
         Route::get('notification-delete', [NotificationController::class, 'destroy']);
         Route::post('notification-multiple-delete', [NotificationController::class, 'multiple_delete']);
-        /// END :: NOTIFICATION
+        // / END :: NOTIFICATION
 
-        /// START :: PROJECT
+        // / START :: PROJECT
         Route::post('project-generate-slug', [ProjectController::class, 'generateAndCheckSlug'])->name('project.generate-slug');
         Route::post('updateProjectStatus', [ProjectController::class, 'updateStatus'])->name('updateProjectStatus');
         Route::post('project-gallery', [ProjectController::class, 'removeGalleryImage'])->name('project.remove-gallary-images');
@@ -305,40 +286,39 @@ Route::middleware(['language'])->group(function () {
         Route::delete('remove-project-floor/{id}', [ProjectController::class, 'removeFloorPlan'])->name('project.remove-floor-plan');
         Route::post('update-project-request-status', [ProjectController::class, 'updateRequestStatus'])->name('update-project-request-status');
         Route::resource('project', ProjectController::class);
-        /// END :: PROJECT
+        // / END :: PROJECT
 
-        /// START :: SEO SETTINGS
+        // / START :: SEO SETTINGS
         Route::resource('seo_settings', SeoSettingsController::class);
         Route::get('seo-settings-destroy/{id}', [SeoSettingsController::class, 'destroy'])->name('seo_settings.destroy');
-        /// END :: SEO SETTINGS
+        // / END :: SEO SETTINGS
 
-        /// START :: FAQs
+        // / START :: FAQs
         Route::post('faq/status-update', [FaqController::class, 'statusUpdate'])->name('faqs.status-update');
         Route::resource('faqs', FaqController::class);
-        /// END :: FAQs
+        // / END :: FAQs
 
-        /// START :: City Images
+        // / START :: City Images
         Route::post('city-images/status-update', [CityImagesController::class, 'statusUpdate'])->name('city-images.status-update');
         Route::resource('city-images', CityImagesController::class);
-        /// END :: City Images
+        // / END :: City Images
 
-        /// START :: Homepage Sections
+        // / START :: Homepage Sections
         Route::post('homepage-sections/status-update', [HomepageSectionController::class, 'statusUpdate'])->name('homepage-sections.status-update');
         Route::post('homepage-sections/update-order', [HomepageSectionController::class, 'updateOrder'])->name('homepage-sections.update-order');
         Route::resource('homepage-sections', HomepageSectionController::class);
-        /// END :: Homepage Sections
-
+        // / END :: Homepage Sections
 
         Route::get('calculator', function () {
-            if (!has_permissions('read', 'calculator')) {
+            if (! has_permissions('read', 'calculator')) {
                 return redirect()->back()->with('error', PERMISSION_ERROR_MSG);
             }
+
             return view('Calculator.calculator');
         });
 
-
-        /// Start :: User Verification Form
-        Route::prefix('verify-customer')->group(function(){
+        // / Start :: User Verification Form
+        Route::prefix('verify-customer')->group(function () {
             Route::get('/custom-form', [VerifyCustomerFormController::class, 'verifyCustomerFormIndex'])->name('verify-customer.form');
             Route::post('/save-custom-form', [VerifyCustomerFormController::class, 'verifyCustomerFormStore'])->name('verify-customer-form.store');
             Route::get('/list-custom-form', [VerifyCustomerFormController::class, 'verifyCustomerFormShow'])->name('verify-customer-form.show');
@@ -351,19 +331,19 @@ Route::middleware(['language'])->group(function () {
             Route::get('/', [VerifyCustomerFormController::class, 'agentVerificationListIndex'])->name('agent-verification.index');
             Route::get('/list', [VerifyCustomerFormController::class, 'agentVerificationList'])->name('agent-verification.list');
             Route::get('/submitted-form/{id}', [VerifyCustomerFormController::class, 'getAgentSubmittedForm'])->name('agent-verification.show-form');
-            Route::post('/update-verification-status', [VerifyCustomerFormController::class,'updateVerificationStatus'])->name('agent-verification.change-status');
-            Route::post('/auto-approve-settings', [VerifyCustomerFormController::class,'autoApproveSettings'])->name('agent-verification.auto-approve');
-            Route::post('/verification-required-for-user-settings', [VerifyCustomerFormController::class,'verificationRequiredForUserSettings'])->name('agent-verification.verification-required-for-user');
+            Route::post('/update-verification-status', [VerifyCustomerFormController::class, 'updateVerificationStatus'])->name('agent-verification.change-status');
+            Route::post('/auto-approve-settings', [VerifyCustomerFormController::class, 'autoApproveSettings'])->name('agent-verification.auto-approve');
+            Route::post('/verification-required-for-user-settings', [VerifyCustomerFormController::class, 'verificationRequiredForUserSettings'])->name('agent-verification.verification-required-for-user');
         });
 
     });
 
-    Route::get('get-currency-symbol',[SettingController::class, 'getCurrencySymbol'])->name('get-currency-symbol');
+    Route::get('get-currency-symbol', [SettingController::class, 'getCurrencySymbol'])->name('get-currency-symbol');
     // Reset Password
-    Route::get('reset-password',[CustomersController::class, 'resetPasswordIndex']);
-    Route::post('change-password',[CustomersController::class, 'resetPassword'])->name('customer.reset-password');
+    Route::get('reset-password', [CustomersController::class, 'resetPasswordIndex']);
+    Route::post('change-password', [CustomersController::class, 'resetPassword'])->name('customer.reset-password');
 });
-Route::get('deep-link', function(){
+Route::get('deep-link', function () {
     return view('settings.deep-link');
 });
 // Local Language Values for JS
@@ -372,20 +352,20 @@ Route::get('/js/lang', static function () {
     header('Content-Type: text/javascript');
     $labels = \Illuminate\Support\Facades\Cache::remember('lang.js', 3600, static function () {
         $lang = Session::get('locale') ?? 'en';
-        $files = resource_path('lang/' . $lang . '.json');
+        $files = resource_path('lang/'.$lang.'.json');
+
         return File::get($files);
     });
-    echo('window.trans = ' . $labels);
+    echo 'window.trans = '.$labels;
     exit();
 })->name('assets.lang');
 
-
 // Add New Migration Route
-Route::get('migrate', function () {
-    Artisan::call('migrate');
-    $output = Artisan::output();
-    echo nl2br($output); // Convert newlines to <br> for better readability in HTML
-});
+// Route::get('migrate', function () {
+//     Artisan::call('migrate');
+//     $output = Artisan::output();
+//     echo nl2br($output); // Convert newlines to <br> for better readability in HTML
+// });
 
 // Route::get('migrate-status', function () {
 //     Artisan::call('migrate:status');
@@ -405,17 +385,18 @@ Route::get('/clear', function () {
     Artisan::call('cache:clear');
     Artisan::call('view:clear');
     Artisan::call('view:cache');
+
     return redirect()->back();
 });
 
-Route::get('/add-url', function(){
+Route::get('/add-url', function () {
     $envUpdates = [
         'APP_URL' => Request::root(),
     ];
     updateEnv($envUpdates);
 })->name('add-url-in-env');
 
-Route::get('/seed-demo-data', function(){
+Route::get('/seed-demo-data', function () {
     Artisan::call('db:seed', ['--class' => 'DemoDataSeeder']);
     $output = Artisan::output();
     echo nl2br($output); // Convert newlines to <br> for better readability in HTML

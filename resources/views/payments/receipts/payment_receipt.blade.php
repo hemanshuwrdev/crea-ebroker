@@ -11,8 +11,12 @@
             font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 10px;
             color: #333;
-            line-height: 1.4;
-            margin: 20px;
+            line-height: 1.3;
+            margin: 15px;
+        }
+
+        @page {
+            margin: 15px;
         }
 
         .container {
@@ -29,16 +33,16 @@
         }
 
         .logo {
-            height: 70px;
+            height: 55px;
             display: block;
-            margin: 0 auto 10px;
+            margin: 0 auto 5px;
         }
 
         .title-row {
             text-align: center;
-            font-size: 22px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .company-address-line {
@@ -63,16 +67,16 @@
             background: #fff;
             font-weight: bold;
             border-bottom: 1px solid #eee;
-            margin: 15px 0 10px;
+            margin: 8px 0 5px;
         }
 
         .info-table {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
 
         .info-table td {
-            padding: 3px 0;
+            padding: 1px 0;
             vertical-align: top;
         }
 
@@ -93,24 +97,31 @@
         .table th {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 5px;
             text-align: center;
         }
 
         .table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 5px;
             vertical-align: top;
         }
 
         .description-cell {
-            line-height: 1.6;
+            line-height: 1.4;
+        }
+
+        .package-desc {
+            display: block;
+            overflow: hidden;
+            font-size: 9px;
+            line-height: 1.3;
+            max-height: 6.5em;
         }
 
         .bank-details {
-            font-size: 13px;
-            text-align: center;
-            margin-top: 20px;
+            font-size: 11px;
+            text-align: left;
             font-weight: bold;
         }
 
@@ -127,31 +138,35 @@
         }
 
         .total-section {
-            margin-top: 20px;
-            text-align: right;
+            margin-top: 10px;
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .total-row {
-            margin-bottom: 5px;
+        .total-section td {
+            vertical-align: middle;
+            padding: 0;
         }
 
         .total-amount {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
+            margin: 0;
+            white-space: nowrap;
         }
 
         .footer {
-            margin-top: 30px;
+            margin-top: 10px;
             text-align: center;
-            font-size: 12px;
+            font-size: 10px;
             color: #777;
             border-top: 1px solid #ddd;
-            padding-top: 20px;
+            padding-top: 6px;
         }
 
         .amount-in-words {
             text-align: right;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
             font-style: italic;
         }
     </style>
@@ -177,12 +192,13 @@
 
         <div class="title-row">Tax Invoice</div>
         <div class="company-address-line">
-            <p class="text-center">{{ $settings['company_name'] ?? 'Company Name' }} | {{ $settings['company_address'] ?? 'Company Address' }}</p>
+            <h3 class="text-center">{{ $settings['company_name'] ?? 'Company Name' }}</h3>
+            <p class="text-center"><strong>{{ $settings['company_address'] ?? 'Company Address' }}</strong></p>
             @php
                 // if company_tel1 is not null, then use it, otherwise use company_tel2
                 $settings['company_tel'] = $settings['company_tel1'] ?? $settings['company_tel2'] ?? 'xxxxxxxxxxxxxxx';
             @endphp
-            <p class="text-center">{{ $settings['company_email'] ?? 'support@example.com' }} | {{ $settings['company_tel'] }}</p>
+            <p class="text-center"><strong>{{ $settings['company_email'] ?? 'support@example.com' }} | {{ $settings['company_tel'] }}</strong></p>
         </div>
 
         <table class="meta-info-table">
@@ -246,8 +262,15 @@
                     <td class="text-center">1</td>
                     <td class="description-cell">
                         <strong>{{ $payment->package->name }}</strong><br>
-                        {{-- This ensures descriptions are on separate lines --}}
-                        {!! nl2br(e($payment->package->description)) !!}
+                        @php
+                            $descLines = preg_split('/\r\n|\r|\n/', (string) $payment->package->description);
+                            $descLines = array_slice($descLines, 0, 5);
+                            $descTrimmed = implode("\n", $descLines);
+                            if (count(preg_split('/\r\n|\r|\n/', (string) $payment->package->description)) > 5) {
+                                $descTrimmed .= '...';
+                            }
+                        @endphp
+                        <span class="package-desc">{!! nl2br(e($descTrimmed)) !!}</span>
                     </td>
                     <td class="text-center">1</td>
                     <td class="text-right">{{ number_format($amountBeforeTax, 2) }}</td>
@@ -304,19 +327,18 @@
             <strong>Amount in Words: </strong> {{ $amountInWords }} Only
         </div>
 
-        <div class="total-section">
-            <div class="total-row">
-                <span class="total-label">
-                    <h3>Payment Received</h3>
-                </span>
-            </div>
-        </div>
-
-        <div class="bank-details">
-            A/C Details: {{ $settings['receipt_ac_details'] ?? 'CONFEDERATION OF REAL ESTATE ASSOCIATES INDIA' }},
-            Current Bank A/C: {{ $settings['receipt_current_bank_ac'] ?? 'IDFC FIRST Bank:10133938666' }},
-            Bank IFSC: {{ $settings['receipt_bank_ifsc'] ?? 'IDFB0081103' }}
-        </div>
+        <table class="total-section">
+            <tr>
+                <td class="bank-details" style="width: 75%;">
+                    A/C Details: {{ $settings['receipt_ac_details'] ?? 'CONFEDERATION OF REAL ESTATE ASSOCIATES INDIA' }},<br>
+                    Current Bank A/C: {{ $settings['receipt_current_bank_ac'] ?? 'IDFC FIRST Bank:10133938666' }},<br>
+                    Bank IFSC: {{ $settings['receipt_bank_ifsc'] ?? 'IDFB0081103' }}
+                </td>
+                <td class="total-amount" style="width: 25%; text-align: right;">
+                    Payment Received
+                </td>
+            </tr>
+        </table>
 
         <div class="footer">
             <p>Thank you for your purchase!</p>

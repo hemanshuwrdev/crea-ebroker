@@ -3030,10 +3030,14 @@ class ApiController extends Controller
         try {
             $loggedInUserId = Auth::user()->id;
             $amount = 0;
+            $paymentType = 'free';
+            $paymentGateway = null;
 
             if ($request->in_app == 'true' || $request->in_app === true) {
                 $package = Package::where('ios_product_id', $request->product_id)->first();
                 $amount = $package->price;
+                $paymentType = 'online payment';
+                $paymentGateway = 'ios';
             } else {
                 $package = Package::where('id', $request->package_id)->first();
                 if ($package->package_type == 'paid') {
@@ -3055,8 +3059,8 @@ class ApiController extends Controller
                     'user_id' => $loggedInUserId,
                     'package_id' => $package->id,
                     'amount' => $amount,
-                    'payment_gateway' => null,
-                    'payment_type' => 'free',
+                    'payment_gateway' => $paymentGateway,
+                    'payment_type' => $paymentType,
                     'payment_status' => 'success',
                     'order_id' => Str::uuid(),
                     'transaction_id' => Str::uuid(),

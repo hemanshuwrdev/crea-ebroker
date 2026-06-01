@@ -3029,9 +3029,11 @@ class ApiController extends Controller
         }
         try {
             $loggedInUserId = Auth::user()->id;
+            $amount = 0;
 
             if ($request->in_app == 'true' || $request->in_app === true) {
                 $package = Package::where('ios_product_id', $request->product_id)->first();
+                $amount = $package->price;
             } else {
                 $package = Package::where('id', $request->package_id)->first();
                 if ($package->package_type == 'paid') {
@@ -3052,7 +3054,7 @@ class ApiController extends Controller
                 $paymentTransactionData = PaymentTransaction::create([
                     'user_id' => $loggedInUserId,
                     'package_id' => $package->id,
-                    'amount' => 0,
+                    'amount' => $amount,
                     'payment_gateway' => null,
                     'payment_type' => 'free',
                     'payment_status' => 'success',
